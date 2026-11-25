@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cierres y EIFS · Newen Antu · Tablero de Obra</title>
+  <style>
+    :root {
+      --corp-blue: #2A2F36;
+      --corp-red: #F5A524;
+      --bg-dark: #090D16;
+      --panel-dark: #111827;
+      --card-dark: #1F2937;
+      --border-col: #374151;
+      --text-main: #F9FAFB;
+      --text-muted: #9CA3AF;
+      --sem-red: #F8696B;
+      --sem-yel: #FFEB84;
+      --sem-grn: #63BE7B;
+      --pac-gold: #F59E0B;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* HEADER CORPORATIVO */
+    header {
+      background: linear-gradient(90deg, var(--corp-blue) 0%, #1A1D21 100%);
+      border-bottom: 3px solid var(--corp-red);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+      z-index: 20;
+    }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .btn-portal {
+      background: rgba(255,255,255,0.1);
+      color: var(--text-main);
+      text-decoration: none;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-portal:hover { background: var(--corp-red); border-color: var(--corp-red); }
+    .project-title h1 { font-size: 1.15rem; font-weight: 700; letter-spacing: 0.5px; }
+    .project-title span { font-size: 0.78rem; color: #CBD5E1; display: block; }
+
+    .header-kpis { display: flex; gap: 18px; align-items: center; }
+    .kpi-box {
+      background: rgba(0,0,0,0.35);
+      padding: 6px 14px;
+      border-radius: 6px;
+      border-left: 3px solid var(--corp-red);
+      text-align: right;
+    }
+    .kpi-box .lbl { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
+    .kpi-box .val { font-size: 1.1rem; font-weight: 800; color: #fff; }
+
+    /* BARRA DE HERRAMIENTAS Y PROGRAMACIÓN RÁPIDA */
+    .toolbar {
+      background: var(--panel-dark);
+      border-bottom: 1px solid var(--border-col);
+      padding: 8px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      z-index: 15;
+    }
+    .nav-group { display: flex; align-items: center; gap: 6px; }
+    .nav-label { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); margin-right: 4px; text-transform: uppercase; }
+    .tab-btn {
+      background: var(--card-dark);
+      color: var(--text-main);
+      border: 1px solid var(--border-col);
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.82rem;
+      transition: 0.15s;
+    }
+    .tab-btn:hover { border-color: #FCD385; }
+    .tab-btn.active { background: var(--corp-blue); border-color: #F5A524; color: #fff; box-shadow: 0 0 8px rgba(245, 165, 36,0.5); }
+    .tab-btn.active-lvl { background: var(--corp-red); border-color: #F87171; color: #fff; }
+
+    /* MODO PROGRAMACIÓN RÁPIDA */
+    .fast-prog-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(42, 47, 54, 0.35);
+      border: 1px solid #1E3A8A;
+      padding: 5px 12px;
+      border-radius: 6px;
+    }
+    .fast-prog-bar.active-mode {
+      background: rgba(245, 165, 36, 0.25);
+      border-color: var(--corp-red);
+      box-shadow: 0 0 12px rgba(245, 165, 36, 0.4);
+    }
+    .toggle-fast-btn {
+      background: var(--card-dark);
+      color: var(--text-main);
+      border: 1px solid var(--border-col);
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .toggle-fast-btn.on { background: var(--corp-red); border-color: #FCD385; color: #fff; animation: pulse 1.8s infinite; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.75; } 100% { opacity: 1; } }
+
+    select.ctrl-select {
+      background: #0F172A;
+      color: var(--text-main);
+      border: 1px solid var(--border-col);
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      outline: none;
+    }
+
+    .action-group { display: flex; align-items: center; gap: 8px; }
+    .btn-action {
+      padding: 6px 13px;
+      border-radius: 5px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s;
+    }
+    .btn-export { background: #10B981; color: #052E16; }
+    .btn-export:hover { background: #34D399; }
+    .btn-clear { background: #374151; color: #F3F4F6; border: 1px solid #4B5563; }
+    .btn-clear:hover { background: var(--corp-red); border-color: var(--corp-red); color: #fff; }
+
+    /* WORKSPACE PRINCIPAL */
+    .workspace {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 410px;
+      overflow: hidden;
+    }
+
+    /* ZONA CENTRAL: PLANO SVG */
+    .canvas-zone {
+      position: relative;
+      background: radial-gradient(circle at center, #111827 0%, #070A10 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+    .canvas-header-overlay {
+      position: absolute;
+      top: 15px;
+      left: 20px;
+      background: rgba(17, 24, 39, 0.85);
+      border: 1px solid var(--border-col);
+      padding: 8px 14px;
+      border-radius: 6px;
+      backdrop-filter: blur(4px);
+    }
+    .canvas-header-overlay h2 { font-size: 0.95rem; color: #fff; }
+    .canvas-header-overlay p { font-size: 0.75rem; color: var(--text-muted); }
+
+    .legend-overlay {
+      position: absolute;
+      bottom: 15px;
+      left: 20px;
+      background: rgba(17, 24, 39, 0.9);
+      border: 1px solid var(--border-col);
+      padding: 8px 14px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 0.75rem;
+    }
+    .grad-bar {
+      width: 120px;
+      height: 10px;
+      border-radius: 5px;
+      background: linear-gradient(90deg, var(--sem-red) 0%, var(--sem-yel) 50%, var(--sem-grn) 100%);
+    }
+    .pac-badge-legend {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--pac-gold);
+      font-weight: 700;
+    }
+
+    svg#floorplan {
+      width: 100%;
+      height: 100%;
+      max-width: 1050px;
+      max-height: 75vh;
+      filter: drop-shadow(0 10px 25px rgba(0,0,0,0.7));
+    }
+    .unit-poly {
+      stroke: #1E293B;
+      stroke-width: 8;
+      cursor: pointer;
+      transition: filter 0.15s, stroke 0.15s, stroke-width 0.15s;
+      stroke-linejoin: round;
+    }
+    .unit-poly:hover {
+      filter: brightness(1.15);
+      stroke: #ffffff;
+      stroke-width: 12;
+    }
+    .unit-poly.pac-scheduled {
+      stroke: var(--pac-gold);
+      stroke-width: 14;
+      stroke-dasharray: 28, 12;
+    }
+    .shaft-poly {
+      fill: rgba(15, 23, 42, 0.55);
+      stroke: #475569;
+      stroke-width: 4;
+      pointer-events: none;
+    }
+    .svg-label-title {
+      font-size: 38px;
+      font-weight: 800;
+      fill: #0F172A;
+      text-anchor: middle;
+      pointer-events: none;
+    }
+    .svg-label-pct {
+      font-size: 32px;
+      font-weight: 800;
+      fill: #0F172A;
+      text-anchor: middle;
+      pointer-events: none;
+    }
+    .svg-label-pac {
+      font-size: 23px;
+      font-weight: 700;
+      fill: #1E293B;
+      text-anchor: middle;
+      pointer-events: none;
+    }
+
+    /* PANEL LATERAL DERECHO: LISTADOS C Y D */
+    .side-panel {
+      background: var(--panel-dark);
+      border-left: 1px solid var(--border-col);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 16px;
+      gap: 18px;
+    }
+    .side-section {
+      background: var(--card-dark);
+      border: 1px solid var(--border-col);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .side-sec-header {
+      background: linear-gradient(90deg, var(--corp-blue) 0%, #1E293B 100%);
+      padding: 10px 14px;
+      border-bottom: 2px solid var(--corp-red);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+    .side-sec-header h3 { font-size: 0.88rem; font-weight: 700; color: #fff; }
+    .side-sec-header .badge-pct {
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #0F172A;
+    }
+    .side-sec-body { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+
+    .side-task-row {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid var(--border-col);
+      border-radius: 6px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: 0.15s;
+    }
+    .side-task-row.pac-active {
+      border-color: var(--pac-gold);
+      background: rgba(245, 158, 11, 0.1);
+    }
+    .side-task-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .side-task-controls {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 8px;
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--corp-red);
+      cursor: pointer;
+    }
+    .pac-check-label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.74rem;
+      color: var(--pac-gold);
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* MODAL DE EDICIÓN ESTÁNDAR */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(3px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-content {
+      background: var(--panel-dark);
+      border: 1px solid var(--border-col);
+      border-top: 4px solid var(--corp-red);
+      width: 95%;
+      max-width: 680px;
+      border-radius: 8px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.85);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-header {
+      background: var(--corp-blue);
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h3 { font-size: 1.05rem; color: #fff; }
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 1.3rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .modal-body {
+      padding: 18px 20px;
+      max-height: 70vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .modal-task-item {
+      background: var(--card-dark);
+      border: 1px solid var(--border-col);
+      padding: 12px 14px;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .modal-task-item.pac-on {
+      border-color: var(--pac-gold);
+      background: rgba(245, 158, 11, 0.08);
+    }
+    .modal-task-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .modal-task-grid {
+      display: grid;
+      grid-template-columns: 1fr 140px 150px;
+      gap: 12px;
+      align-items: center;
+    }
+    .modal-footer {
+      padding: 12px 20px;
+      background: #0B0F19;
+      border-top: 1px solid var(--border-col);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .btn-modal-save {
+      background: var(--corp-blue);
+      color: #fff;
+      border: 1px solid #F5A524;
+      padding: 8px 18px;
+      border-radius: 5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-modal-save:hover { background: #1D4ED8; }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER CORPORATIVO -->
+  <header>
+    <div class="header-left">
+      <a href="index.html" class="btn-portal">☀ Tablero de Obra</a>
+      <div class="project-title">
+        <h1>PROYECTO NEWEN ANTU (80 DEPTOS)</h1>
+        <span>Módulo: Control de Cierres, Tabiques y Envolvente | Secuencia LPS: T5 → T1 → T2 → T4 → T3</span>
+      </div>
+    </div>
+    <div class="header-kpis">
+      <div class="kpi-box">
+        <div class="lbl">Avance Global Módulo</div>
+        <div class="val" id="kpi-global-pct">0.0%</div>
+      </div>
+      <div class="kpi-box">
+        <div class="lbl">Avance Torre Actual</div>
+        <div class="val" id="kpi-tower-pct">0.0%</div>
+      </div>
+      <div class="kpi-box" style="border-left-color: var(--pac-gold);">
+        <div class="lbl">Partidas en PAC</div>
+        <div class="val" id="kpi-pac-count" style="color: var(--pac-gold);">0</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- BARRA SUPERIOR DE NAVEGACIÓN Y PROGRAMACIÓN RÁPIDA -->
+  <div class="toolbar">
+    <div style="display:flex; gap:18px; align-items:center; flex-wrap:wrap;">
+      <div class="nav-group" id="tower-tabs">
+        <span class="nav-label">Torre (Tren):</span>
+      </div>
+      <div class="nav-group" id="level-tabs">
+        <span class="nav-label">Nivel:</span>
+      </div>
+    </div>
+
+    <!-- MODO DE PROGRAMACIÓN RÁPIDA -->
+    <div class="fast-prog-bar" id="fast-prog-Container">
+      <button class="toggle-fast-btn" id="btn-toggle-fast" onclick="toggleFastMode()">
+        ⚡ Modo Prog. Rápida: <span id="fast-state-txt">OFF</span>
+      </button>
+      <select id="fast-task-select" class="ctrl-select" title="Partida Global para asignar con 1 clic"></select>
+      <select id="fast-sup-select" class="ctrl-select" title="Supervisor Global"></select>
+    </div>
+
+    <!-- BOTONES DE ACCIÓN LPS -->
+    <div class="action-group">
+      <button class="btn-action btn-export" onclick="exportPrintablePAC()">📥 Exportar PAC Semanal</button>
+      <button class="btn-action btn-clear" onclick="clearAllPAC()">🧹 Limpiar Planificación Actual</button>
+    </div>
+  </div>
+
+  <!-- WORKSPACE CENTRAL + PANEL LATERAL -->
+  <div class="workspace">
+    <!-- PLANO INTERACTIVO PLANTA TIPO (LISTADOS A Y B) -->
+    <div class="canvas-zone">
+      <div class="canvas-header-overlay">
+        <h2 id="canvas-current-title">Torre T5 — Nivel N1</h2>
+        <p id="canvas-mode-hint">Haz clic en cualquier polígono (D1-D4 o Área Común) para abrir el control de avance y PAC.</p>
+      </div>
+
+      <!-- SVG EXTRAÍDO FIELMENTE DEL DXF ADJUNTO -->
+      <svg id="floorplan" viewBox="580 180 2650 1420" preserveAspectRatio="xMidYMid meet">
+        <!-- Polígono DEPARTAMENTO 4 (Arriba Izquierda - Handle 4C3) -->
+        <polygon id="poly-D4" class="unit-poly" onclick="handleUnitClick('D4')"
+          points="1677.57,890.21 685.07,890.21 685.07,598.21 791.07,598.21 791.07,312.21 1418.07,312.21 1418.07,320.21 1598.07,320.21 1598.07,270.21 1767.57,270.21 1767.57,772.71 1677.57,772.71" />
+
+        <!-- Polígono DEPARTAMENTO 3 (Arriba Derecha - Handle 4C5) -->
+        <polygon id="poly-D3" class="unit-poly" onclick="handleUnitClick('D3')"
+          points="2132.57,890.21 3125.07,890.21 3125.07,598.21 3019.07,598.21 3019.07,312.21 2387.07,312.21 2387.07,320.21 2212.07,320.21 2212.07,270.21 2042.57,270.21 2042.57,772.71 2132.57,772.71" />
+
+        <!-- Polígono DEPARTAMENTO 2 (Abajo Izquierda - Handle 4C4) -->
+        <polygon id="poly-D2" class="unit-poly" onclick="handleUnitClick('D2')"
+          points="1677.57,890.21 685.07,890.21 685.07,1182.21 791.07,1182.21 791.07,1468.21 1418.07,1468.21 1418.07,1460.21 1598.07,1460.21 1598.07,1510.21 1775.07,1510.21 1775.07,1317.21 1783.07,1317.21 1783.08,1252.21 1767.57,1252.21 1767.57,1007.71 1677.57,1007.71" />
+
+        <!-- Polígono DEPARTAMENTO 1 (Abajo Derecha - Handle 4C6) -->
+        <polygon id="poly-D1" class="unit-poly" onclick="handleUnitClick('D1')"
+          points="2132.57,890.21 3125.07,890.21 3125.07,1182.21 3019.07,1182.21 3019.07,1468.21 2387.07,1468.21 2387.07,1460.21 2212.07,1460.21 2212.07,1510.21 2035.07,1510.21 2035.07,1317.21 2027.07,1317.21 2027.07,1252.21 2042.57,1252.21 2042.57,1007.71 2132.57,1007.71" />
+
+        <!-- Polígono ÁREA COMÚN CENTRAL (Handle 489) -->
+        <polygon id="poly-COMUN" class="unit-poly" onclick="handleUnitClick('COMUN')"
+          points="1767.57,270.21 2042.57,270.21 2042.57,772.71 2132.57,772.71 2132.57,1007.71 2042.57,1007.71 2042.57,1252.21 1767.57,1252.21 1767.57,1007.71 1677.57,1007.71 1677.57,772.71 1767.57,772.71" />
+
+        <!-- Detalle Caja Escalera / Shaft en Área Común (Handles 48B y 48E) -->
+        <polygon class="shaft-poly" points="1775.07,770.21 1905.07,770.21 1905.07,406.21 1775.07,406.21" />
+        <line x1="1775.07" y1="770.21" x2="1905.07" y2="406.21" stroke="#475569" stroke-width="3" pointer-events="none"/>
+        <line x1="1775.07" y1="406.21" x2="1905.07" y2="770.21" stroke="#475569" stroke-width="3" pointer-events="none"/>
+
+        <!-- Etiquetas Dinámicas sobre los Polígonos -->
+        <g transform="translate(1220, 580)">
+          <text class="svg-label-title" y="-20">DEPTO 4</text>
+          <text id="txt-pct-D4" class="svg-label-pct" y="25">0%</text>
+          <text id="txt-pac-D4" class="svg-label-pac" y="60"></text>
+        </g>
+
+        <g transform="translate(2580, 580)">
+          <text class="svg-label-title" y="-20">DEPTO 3</text>
+          <text id="txt-pct-D3" class="svg-label-pct" y="25">0%</text>
+          <text id="txt-pac-D3" class="svg-label-pac" y="60"></text>
+        </g>
+
+        <g transform="translate(1220, 1180)">
+          <text class="svg-label-title" y="-20">DEPTO 2</text>
+          <text id="txt-pct-D2" class="svg-label-pct" y="25">0%</text>
+          <text id="txt-pac-D2" class="svg-label-pac" y="60"></text>
+        </g>
+
+        <g transform="translate(2580, 1180)">
+          <text class="svg-label-title" y="-20">DEPTO 1</text>
+          <text id="txt-pct-D1" class="svg-label-pct" y="25">0%</text>
+          <text id="txt-pac-D1" class="svg-label-pac" y="60"></text>
+        </g>
+
+        <g transform="translate(1905, 920)">
+          <text class="svg-label-title" style="font-size:28px;" y="-25">ÁREA COMÚN</text>
+          <text id="txt-pct-COMUN" class="svg-label-pct" style="font-size:28px;" y="15">0%</text>
+          <text id="txt-pac-COMUN" class="svg-label-pac" style="font-size:20px;" y="48"></text>
+        </g>
+      </svg>
+
+      <!-- LEYENDA SEMÁFORO CONTINUO -->
+      <div class="legend-overlay">
+        <span>Escala de Avance:</span>
+        <span>0%</span>
+        <div class="grad-bar"></div>
+        <span>100%</span>
+        <span class="pac-badge-legend">⚡ Borde Segmentado = Partida en PAC</span>
+      </div>
+    </div>
+
+    <!-- PANEL LATERAL DERECHO (LISTADOS C Y D) -->
+    <aside class="side-panel">
+      <!-- LISTADO C: POR NIVEL / FACHADA -->
+      <div class="side-section">
+        <div class="side-sec-header" onclick="handleSideHeaderClick('NIVEL')">
+          <div>
+            <h3 id="side-title-nivel">LISTADO C: Nivel N1 / Fachada</h3>
+            <span style="font-size:0.72rem; color:#CBD5E1;">Control de Envolvente y EIFS por Nivel</span>
+          </div>
+          <span class="badge-pct" id="badge-pct-nivel">0%</span>
+        </div>
+        <div class="side-sec-body" id="list-c-container"></div>
+      </div>
+
+      <!-- LISTADO D: POR TORRE COMPLETA -->
+      <div class="side-section">
+        <div class="side-sec-header" onclick="handleSideHeaderClick('TORRE')">
+          <div>
+            <h3 id="side-title-torre">LISTADO D: Torre T5 Completa</h3>
+            <span style="font-size:0.72rem; color:#CBD5E1;">Partidas Globales de Torre</span>
+          </div>
+          <span class="badge-pct" id="badge-pct-torre">0%</span>
+        </div>
+        <div class="side-sec-body" id="list-d-container"></div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- MODAL DE EDICIÓN ESTÁNDAR -->
+  <div class="modal-backdrop" id="unit-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">Control de Frente</h3>
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+      <div class="modal-body" id="modal-tasks-list"></div>
+      <div class="modal-footer">
+        <button class="btn-modal-save" onclick="closeModal()">✔ Guardar y Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /*************************************************************************
+     * 1. PARÁMETROS MAESTROS DEL MÓDULO (BLOQUE 1)
+     *************************************************************************/
+    const TOWERS = ['T5', 'T1', 'T2', 'T4', 'T3'];
+    const LEVELS = ['N1', 'N2', 'N3', 'N4'];
+    const UNITS_DEPTOS = ['D1', 'D2', 'D3', 'D4'];
+    const SUPERVISORS = ['Ignacio Fuentes', 'Sin Asignar'];
+
+    const LISTADO_A = [
+      { id: 'A1', name: '1) Antepechos de Ventanas', list: 'A' },
+      { id: 'A2', name: '2) Instalación Ventanas (Deptos)', list: 'A' },
+      { id: 'A3', name: '3) Tabiques Interiores', list: 'A' },
+      { id: 'A4', name: '4) Shaft y Zócalos Sanitarios', list: 'A' },
+      { id: 'A5', name: '5) Balcones y Barandas', list: 'A' }
+    ];
+
+    const LISTADO_B = [
+      { id: 'B1', name: '1) Instalación Ventanas (Áreas Comunes)', list: 'B' },
+      { id: 'B2', name: '2) Shaft Áreas Comunes', list: 'B' },
+      { id: 'B3', name: '3) Montaje Escalera Metálica', list: 'B' }
+    ];
+
+    const LISTADO_C = [
+      { id: 'C1', name: '1) Armado de andamios', list: 'C' },
+      { id: 'C2', name: '2) Impermeabilización de rasgos', list: 'C' },
+      { id: 'C3', name: '3) EIFS: Pegado EPS', list: 'C' },
+      { id: 'C4', name: '4) EIFS: Malla + Base Coat', list: 'C' },
+      { id: 'C5', name: '5) EIFS: Terminación acrílica', list: 'C' },
+      { id: 'C6', name: '6) Desarmado de andamios', list: 'C' }
+    ];
+
+    const LISTADO_D = [
+      { id: 'D_1', name: '1) Techumbre: impermeabilización', list: 'D' },
+      { id: 'D_2', name: '2) Techumbre: cerchas y costaneras', list: 'D' },
+      { id: 'D_3', name: '3) Techumbre: alero y tapacán', list: 'D' },
+      { id: 'D_4', name: '4) Techumbre: cubierta', list: 'D' },
+      { id: 'D_5', name: '5) Techumbre: hojalatería', list: 'D' },
+      { id: 'D_6', name: '6) Techumbre: aislación', list: 'D' },
+      { id: 'D_7', name: '7) Techumbre: gatera', list: 'D' },
+      { id: 'D_8', name: '8) Bajadas de PVC', list: 'D' },
+      { id: 'D_9', name: '9) Acceso torre (cercha, rampa, entramado)', list: 'D' }
+    ];
+
+    const STORAGE_KEY = 'NA_V7_CIERRES';
+
+    let currentTower = 'T5';
+    let currentLevel = 'N1';
+    let fastModeActive = false;
+    let activeModalUnit = null;
+    let projectData = {};
+
+    /*************************************************************************
+     * 2. INICIALIZACIÓN Y ESTRUCTURA DE DATOS (5 TORRES x 4 NIVELES)
+     *************************************************************************/
+    function createEmptyTaskState(taskList) {
+      const obj = {};
+      taskList.forEach(t => {
+        obj[t.id] = { pct: 0, pac: false, sup: 'Sin Asignar' };
+      });
+      return obj;
+    }
+
+    function initData() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          projectData = JSON.parse(saved);
+          return;
+        } catch (e) { console.error(e); }
+      }
+      projectData = {};
+      TOWERS.forEach(t => {
+        projectData[t] = {
+          torreTasks: createEmptyTaskState(LISTADO_D),
+          levels: {}
+        };
+        LEVELS.forEach(n => {
+          projectData[t].levels[n] = {
+            units: {
+              D1: createEmptyTaskState(LISTADO_A),
+              D2: createEmptyTaskState(LISTADO_A),
+              D3: createEmptyTaskState(LISTADO_A),
+              D4: createEmptyTaskState(LISTADO_A),
+              COMUN: createEmptyTaskState(LISTADO_B)
+            },
+             fachTasks: createEmptyTaskState(LISTADO_C)
+          };
+        });
+      });
+      saveData();
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(projectData));
+    }
+
+    /*************************************************************************
+     * 3. ESCALA DE SEMÁFORO CONTINUO (0% #F8696B -> 50% #FFEB84 -> 100% #63BE7B)
+     *************************************************************************/
+    function getSemaphoreColor(pct) {
+      const p = Math.max(0, Math.min(100, Number(pct) || 0));
+      let r, g, b;
+      if (p <= 50) {
+        const t = p / 50;
+        r = Math.round(248 + (255 - 248) * t);
+        g = Math.round(105 + (235 - 105) * t);
+        b = Math.round(107 + (132 - 107) * t);
+      } else {
+        const t = (p - 50) / 50;
+        r = Math.round(255 + (99 - 255) * t);
+        g = Math.round(235 + (190 - 235) * t);
+        b = Math.round(132 + (123 - 132) * t);
+      }
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    function computeAverage(taskStateObj, taskDefs) {
+      let sum = 0;
+      taskDefs.forEach(t => { sum += Number(taskStateObj[t.id]?.pct || 0); });
+      return taskDefs.length ? (sum / taskDefs.length) : 0;
+    }
+
+    function countPACInUnit(taskStateObj, taskDefs) {
+      let count = 0;
+      taskDefs.forEach(t => { if (taskStateObj[t.id]?.pac) count++; });
+      return count;
+    }
+
+    /*************************************************************************
+     * 4. RENDERIZADO DE CONTROLES Y NAVEGACIÓN
+     *************************************************************************/
+    function initUIControls() {
+      // Botones de Torre (T5 -> T1 -> T3 -> T2 -> T4)
+      const tContainer = document.getElementById('tower-tabs');
+      TOWERS.forEach(t => {
+        const btn = document.createElement('button');
+        btn.className = `tab-btn ${t === currentTower ? 'active' : ''}`;
+        btn.id = `btn-tw-${t}`;
+        btn.textContent = t;
+        btn.onclick = () => { currentTower = t; renderAll(); };
+        tContainer.appendChild(btn);
+      });
+
+      // Botones de Nivel (N1 al N4)
+      const lContainer = document.getElementById('level-tabs');
+      LEVELS.forEach(n => {
+        const btn = document.createElement('button');
+        btn.className = `tab-btn ${n === currentLevel ? 'active-lvl' : ''}`;
+        btn.id = `btn-lv-${n}`;
+        btn.textContent = n;
+        btn.onclick = () => { currentLevel = n; renderAll(); };
+        lContainer.appendChild(btn);
+      });
+
+      // Selector Global de Partidas (Modo Rápido)
+      const taskSel = document.getElementById('fast-task-select');
+      const groups = [
+        { label: 'Listado A: Departamentos (D1-D4)', items: LISTADO_A },
+        { label: 'Listado B: Área Común (COMUN)', items: LISTADO_B },
+        { label: 'Listado C: Nivel / Fachada', items: LISTADO_C },
+        { label: 'Listado D: Torre Completa', items: LISTADO_D }
+      ];
+      groups.forEach(g => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = g.label;
+        g.items.forEach(item => {
+          const opt = document.createElement('option');
+          opt.value = item.id;
+          opt.textContent = item.name;
+          optgroup.appendChild(opt);
+        });
+        taskSel.appendChild(optgroup);
+      });
+
+      // Selector Global de Supervisor
+      const supSel = document.getElementById('fast-sup-select');
+      SUPERVISORS.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s;
+        supSel.appendChild(opt);
+      });
+      supSel.value = 'Supervisor 1';
+    }
+
+    function renderAll() {
+      // Actualizar estado visual pestañas
+      TOWERS.forEach(t => {
+        document.getElementById(`btn-tw-${t}`).className = `tab-btn ${t === currentTower ? 'active' : ''}`;
+      });
+      LEVELS.forEach(n => {
+        document.getElementById(`btn-lv-${n}`).className = `tab-btn ${n === currentLevel ? 'active-lvl' : ''}`;
+      });
+
+      document.getElementById('canvas-current-title').textContent = `Torre ${currentTower} — Nivel ${currentLevel}`;
+
+      renderSVGUnits();
+      renderSidePanel();
+      updateKPIs();
+    }
+
+    /*************************************************************************
+     * 5. RENDERIZADO DEL PLANO SVG CENTRAL (D1-D4 Y COMUN)
+     *************************************************************************/
+    function renderSVGUnits() {
+      const lvlObj = projectData[currentTower].levels[currentLevel];
+
+      // D1 a D4
+      UNITS_DEPTOS.forEach(u => {
+        const uState = lvlObj.units[u];
+        const avg = computeAverage(uState, LISTADO_A);
+        const pacCount = countPACInUnit(uState, LISTADO_A);
+
+        const poly = document.getElementById(`poly-${u}`);
+        poly.style.fill = getSemaphoreColor(avg);
+        if (pacCount > 0) poly.classList.add('pac-scheduled');
+        else poly.classList.remove('pac-scheduled');
+
+        document.getElementById(`txt-pct-${u}`).textContent = `${avg.toFixed(0)}%`;
+        document.getElementById(`txt-pac-${u}`).textContent = pacCount > 0 ? `⚡ ${pacCount} PAC` : '';
+      });
+
+      // COMUN
+      const cState = lvlObj.units.COMUN;
+      const cAvg = computeAverage(cState, LISTADO_B);
+      const cPac = countPACInUnit(cState, LISTADO_B);
+      const cPoly = document.getElementById('poly-COMUN');
+      cPoly.style.fill = getSemaphoreColor(cAvg);
+      if (cPac > 0) cPoly.classList.add('pac-scheduled');
+      else cPoly.classList.remove('pac-scheduled');
+
+      document.getElementById('txt-pct-COMUN').textContent = `${cAvg.toFixed(0)}%`;
+      document.getElementById('txt-pac-COMUN').textContent = cPac > 0 ? `⚡ ${cPac} PAC` : '';
+    }
+
+    /*************************************************************************
+     * 6. RENDERIZADO DEL PANEL LATERAL (LISTADOS C Y D)
+     *************************************************************************/
+    function renderSidePanel() {
+      // Listado C: Nivel / Fachada
+      const fachState = projectData[currentTower].levels[currentLevel].fachTasks;
+      const avgC = computeAverage(fachState, LISTADO_C);
+      document.getElementById('side-title-nivel').textContent = `LISTADO C: Nivel ${currentLevel} / Fachada (${currentTower})`;
+      const badgeC = document.getElementById('badge-pct-nivel');
+      badgeC.textContent = `${avgC.toFixed(0)}%`;
+      badgeC.style.background = getSemaphoreColor(avgC);
+
+      const containerC = document.getElementById('list-c-container');
+      containerC.innerHTML = '';
+      LISTADO_C.forEach(task => {
+        containerC.appendChild(createSideTaskElement(task, fachState[task.id], 'C'));
+      });
+
+      // Listado D: Torre Completa
+      const torreState = projectData[currentTower].torreTasks;
+      const avgD = computeAverage(torreState, LISTADO_D);
+      document.getElementById('side-title-torre').textContent = `LISTADO D: Torre ${currentTower} Completa`;
+      const badgeD = document.getElementById('badge-pct-torre');
+      badgeD.textContent = `${avgD.toFixed(0)}%`;
+      badgeD.style.background = getSemaphoreColor(avgD);
+
+      const containerD = document.getElementById('list-d-container');
+      containerD.innerHTML = '';
+      LISTADO_D.forEach(task => {
+        containerD.appendChild(createSideTaskElement(task, torreState[task.id], 'D'));
+      });
+    }
+
+    function createSideTaskElement(taskDef, stateObj, listType) {
+      const row = document.createElement('div');
+      row.className = `side-task-row ${stateObj.pac ? 'pac-active' : ''}`;
+
+      const top = document.createElement('div');
+      top.className = 'side-task-top';
+      top.innerHTML = `
+        <span>${taskDef.name}</span>
+        <span style="padding:2px 6px; border-radius:4px; color:#0F172A; font-weight:800; background:${getSemaphoreColor(stateObj.pct)}">${stateObj.pct}%</span>
+      `;
+
+      const ctrls = document.createElement('div');
+      ctrls.className = 'side-task-controls';
+
+      const slider = document.createElement('input');
+      slider.type = 'range';
+      slider.min = 0; slider.max = 100; slider.step = 5;
+      slider.value = stateObj.pct;
+      slider.oninput = (e) => {
+        stateObj.pct = Number(e.target.value);
+        saveData();
+        renderAll();
+      };
+
+      const pacLabel = document.createElement('label');
+      pacLabel.className = 'pac-check-label';
+      const chk = document.createElement('input');
+      chk.type = 'checkbox';
+      chk.checked = stateObj.pac;
+      chk.onchange = (e) => {
+        stateObj.pac = e.target.checked;
+        if (stateObj.pac && stateObj.sup === 'Sin Asignar') {
+          stateObj.sup = document.getElementById('fast-sup-select').value || 'Supervisor 1';
+        }
+        saveData();
+        renderAll();
+      };
+      pacLabel.appendChild(chk);
+      pacLabel.appendChild(document.createTextNode('PAC'));
+
+      const supSelect = document.createElement('select');
+      supSelect.className = 'ctrl-select';
+      supSelect.style.fontSize = '0.72rem';
+      supSelect.style.padding = '3px 6px';
+      SUPERVISORS.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s; opt.textContent = s;
+        supSelect.appendChild(opt);
+      });
+      supSelect.value = stateObj.sup;
+      supSelect.onchange = (e) => {
+        stateObj.sup = e.target.value;
+        saveData();
+        renderAll();
+      };
+
+      ctrls.appendChild(slider);
+      ctrls.appendChild(pacLabel);
+      ctrls.appendChild(supSelect);
+
+      row.appendChild(top);
+      row.appendChild(ctrls);
+      return row;
+    }
+
+    /*************************************************************************
+     * 7. MODO DE PROGRAMACIÓN RÁPIDA Y MODAL DE EDICIÓN
+     *************************************************************************/
+    function toggleFastMode() {
+      fastModeActive = !fastModeActive;
+      const btn = document.getElementById('btn-toggle-fast');
+      const box = document.getElementById('fast-prog-Container');
+      const txt = document.getElementById('fast-state-txt');
+      const hint = document.getElementById('canvas-mode-hint');
+
+      if (fastModeActive) {
+        btn.classList.add('on');
+        box.classList.add('active-mode');
+        txt.textContent = 'ON (1-Clic)';
+        hint.textContent = '⚡ MODO PROGRAMACIÓN RÁPIDA ACTIVO: Haz clic sobre cualquier departamento, área común o encabezado lateral para asignar la partida seleccionada al PAC.';
+        hint.style.color = '#FBBF24';
+      } else {
+        btn.classList.remove('on');
+        box.classList.remove('active-mode');
+        txt.textContent = 'OFF';
+        hint.textContent = 'Haz clic en cualquier polígono (D1-D4 o Área Común) para abrir el control de avance y PAC.';
+        hint.style.color = 'var(--text-muted)';
+      }
+    }
+
+    function handleUnitClick(unitKey) {
+      if (fastModeActive) {
+        const selectedTask = document.getElementById('fast-task-select').value;
+        const selectedSup = document.getElementById('fast-sup-select').value;
+        const unitTasks = projectData[currentTower].levels[currentLevel].units[unitKey];
+
+        if (unitKey === 'COMUN' && !selectedTask.startsWith('B')) {
+          alert('Para programar el Área Común en Modo Rápido, selecciona una partida del Listado B en la barra superior.');
+          return;
+        }
+        if (unitKey !== 'COMUN' && !selectedTask.startsWith('A')) {
+          alert('Para programar Departamentos (D1-D4) en Modo Rápido, selecciona una partida del Listado A en la barra superior.');
+          return;
+        }
+
+        const target = unitTasks[selectedTask];
+        target.pac = !target.pac;
+        target.sup = target.pac ? selectedSup : 'Sin Asignar';
+        saveData();
+        renderAll();
+        return;
+      }
+
+      openUnitModal(unitKey);
+    }
+
+    function handleSideHeaderClick(targetScope) {
+      if (!fastModeActive) return;
+      const selectedTask = document.getElementById('fast-task-select').value;
+      const selectedSup = document.getElementById('fast-sup-select').value;
+
+      if (targetScope === 'NIVEL') {
+        if (!selectedTask.startsWith('C')) {
+          alert('Selecciona una partida del Listado C (Nivel/Fachada) en el selector superior.');
+          return;
+        }
+        const tObj = projectData[currentTower].levels[currentLevel].fachTasks[selectedTask];
+        tObj.pac = !tObj.pac;
+        tObj.sup = tObj.pac ? selectedSup : 'Sin Asignar';
+      } else if (targetScope === 'TORRE') {
+        if (!selectedTask.startsWith('D_')) {
+          alert('Selecciona una partida del Listado D (Torre Completa) en el selector superior.');
+          return;
+        }
+        const tObj = projectData[currentTower].torreTasks[selectedTask];
+        tObj.pac = !tObj.pac;
+        tObj.sup = tObj.pac ? selectedSup : 'Sin Asignar';
+      }
+      saveData();
+      renderAll();
+    }
+
+    function openUnitModal(unitKey) {
+      activeModalUnit = unitKey;
+      const modal = document.getElementById('unit-modal');
+      const title = document.getElementById('modal-title');
+      const listContainer = document.getElementById('modal-tasks-list');
+
+      const taskDefs = unitKey === 'COMUN' ? LISTADO_B : LISTADO_A;
+      const unitState = projectData[currentTower].levels[currentLevel].units[unitKey];
+
+      title.textContent = `Edición de Frente: Torre ${currentTower} | Nivel ${currentLevel} | Unidad ${unitKey}`;
+      listContainer.innerHTML = '';
+
+      taskDefs.forEach(tDef => {
+        const st = unitState[tDef.id];
+        const item = document.createElement('div');
+        item.className = `modal-task-item ${st.pac ? 'pac-on' : ''}`;
+
+        const head = document.createElement('div');
+        head.className = 'modal-task-head';
+        const badgeId = `modal-pct-val-${tDef.id}`;
+        head.innerHTML = `
+          <span>${tDef.name}</span>
+          <span id="${badgeId}" style="padding:3px 10px; border-radius:4px; color:#0F172A; background:${getSemaphoreColor(st.pct)}">${st.pct}%</span>
+        `;
+
+        const grid = document.createElement('div');
+        grid.className = 'modal-task-grid';
+
+        const slider = document.createElement('input');
+        slider.type = 'range';
+        slider.min = 0; slider.max = 100; slider.step = 5;
+        slider.value = st.pct;
+        slider.oninput = (e) => {
+          st.pct = Number(e.target.value);
+          const b = document.getElementById(badgeId);
+          b.textContent = `${st.pct}%`;
+          b.style.background = getSemaphoreColor(st.pct);
+          saveData();
+          renderAll();
+        };
+
+        const pacLbl = document.createElement('label');
+        pacLbl.className = 'pac-check-label';
+        pacLbl.style.fontSize = '0.84rem';
+        const chk = document.createElement('input');
+        chk.type = 'checkbox';
+        chk.checked = st.pac;
+        chk.onchange = (e) => {
+          st.pac = e.target.checked;
+          if (st.pac && st.sup === 'Sin Asignar') {
+            st.sup = document.getElementById('fast-sup-select').value || 'Supervisor 1';
+            supSel.value = st.sup;
+          }
+          item.className = `modal-task-item ${st.pac ? 'pac-on' : ''}`;
+          saveData();
+          renderAll();
+        };
+        pacLbl.appendChild(chk);
+        pacLbl.appendChild(document.createTextNode(' Programar PAC'));
+
+        const supSel = document.createElement('select');
+        supSel.className = 'ctrl-select';
+        SUPERVISORS.forEach(s => {
+          const opt = document.createElement('option');
+          opt.value = s; opt.textContent = s;
+          supSel.appendChild(opt);
+        });
+        supSel.value = st.sup;
+        supSel.onchange = (e) => {
+          st.sup = e.target.value;
+          saveData();
+          renderAll();
+        };
+
+        grid.appendChild(slider);
+        grid.appendChild(pacLbl);
+        grid.appendChild(supSel);
+
+        item.appendChild(head);
+        item.appendChild(grid);
+        listContainer.appendChild(item);
+      });
+
+      modal.classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('unit-modal').classList.remove('open');
+      activeModalUnit = null;
+    }
+
+    /*************************************************************************
+     * 8. CÁLCULO DE KPIS GLOBALES Y CONTEO PAC
+     *************************************************************************/
+    function updateKPIs() {
+      let totalSum = 0;
+      let totalCount = 0;
+      let towerSum = 0;
+      let towerCount = 0;
+      let pacTotal = 0;
+
+      TOWERS.forEach(t => {
+        const tObj = projectData[t];
+        // Listado D
+        LISTADO_D.forEach(task => {
+          const st = tObj.torreTasks[task.id];
+          totalSum += st.pct; totalCount++;
+          if (t === currentTower) { towerSum += st.pct; towerCount++; }
+          if (st.pac) pacTotal++;
+        });
+
+        LEVELS.forEach(n => {
+          const lObj = tObj.levels[n];
+          // Listado C
+          LISTADO_C.forEach(task => {
+            const st = lObj.fachTasks[task.id];
+            totalSum += st.pct; totalCount++;
+            if (t === currentTower) { towerSum += st.pct; towerCount++; }
+            if (st.pac) pacTotal++;
+          });
+          // Listado A
+          UNITS_DEPTOS.forEach(u => {
+            LISTADO_A.forEach(task => {
+              const st = lObj.units[u][task.id];
+              totalSum += st.pct; totalCount++;
+              if (t === currentTower) { towerSum += st.pct; towerCount++; }
+              if (st.pac) pacTotal++;
+            });
+          });
+          // Listado B
+          LISTADO_B.forEach(task => {
+            const st = lObj.units.COMUN[task.id];
+            totalSum += st.pct; totalCount++;
+            if (t === currentTower) { towerSum += st.pct; towerCount++; }
+            if (st.pac) pacTotal++;
+          });
+        });
+      });
+
+      const globalAvg = totalCount ? (totalSum / totalCount) : 0;
+      const towerAvg = towerCount ? (towerSum / towerCount) : 0;
+
+      document.getElementById('kpi-global-pct').textContent = `${globalAvg.toFixed(1)}%`;
+      document.getElementById('kpi-tower-pct').textContent = `${towerAvg.toFixed(1)}%`;
+      document.getElementById('kpi-pac-count').textContent = pacTotal;
+    }
+
+    /*************************************************************************
+     * 9. EXPORTACIÓN DE PAC SEMANAL EN FORMATO IMPRIMIBLE (PDF/HTML)
+     *************************************************************************/
+    function exportPrintablePAC() {
+      const pacRows = [];
+
+      // Recorrer según secuencia LPS: T5 -> T1 -> T3 -> T2 -> T4
+      TOWERS.forEach(t => {
+        const tObj = projectData[t];
+
+        LEVELS.forEach(n => {
+          const lObj = tObj.levels[n];
+
+          // Unidades D1 a D4
+          UNITS_DEPTOS.forEach(u => {
+            LISTADO_A.forEach(task => {
+              const st = lObj.units[u][task.id];
+              if (st.pac) {
+                pacRows.push({
+                  code: `${t}-${n}-${u}`,
+                  torre: t,
+                  nivel: n,
+                  unidad: `Depto ${u}`,
+                  partida: task.name,
+                  sup: st.sup,
+                  pct: st.pct
+                });
+              }
+            });
+          });
+
+          // Área Común
+          LISTADO_B.forEach(task => {
+            const st = lObj.units.COMUN[task.id];
+            if (st.pac) {
+              pacRows.push({
+                code: `${t}-${n}-COMUN`,
+                torre: t,
+                nivel: n,
+                unidad: 'Área Común',
+                partida: task.name,
+                sup: st.sup,
+                pct: st.pct
+              });
+            }
+          });
+
+          // Nivel / Fachada
+          LISTADO_C.forEach(task => {
+            const st = lObj.fachTasks[task.id];
+            if (st.pac) {
+              pacRows.push({
+                code: `${t}-${n}-FACH`,
+                torre: t,
+                nivel: n,
+                unidad: 'Nivel / Fachada',
+                partida: task.name,
+                sup: st.sup,
+                pct: st.pct
+              });
+            }
+          });
+        });
+
+        // Torre Completa
+        LISTADO_D.forEach(task => {
+          const st = tObj.torreTasks[task.id];
+          if (st.pac) {
+            pacRows.push({
+              code: `${t}-GLOBAL`,
+              torre: t,
+              nivel: 'Todos',
+              unidad: 'Torre Completa',
+              partida: task.name,
+              sup: st.sup,
+              pct: st.pct
+            });
+          }
+        });
+      });
+
+      if (pacRows.length === 0) {
+        alert('No hay partidas marcadas como "Programar PAC" actualmente. Selecciona partidas desde el modal o mediante el Modo de Programación Rápida.');
+        return;
+      }
+
+      const today = new Date().toLocaleDateString('es-CL', {
+        year: 'numeric', month: '2-digit', day: '2-digit'
+      });
+
+      let rowsHtml = '';
+      pacRows.forEach((r, idx) => {
+        rowsHtml += `
+          <tr>
+            <td style="text-align:center; font-weight:700;">${idx + 1}</td>
+            <td style="font-weight:700; color:#2A2F36;">${r.code}</td>
+            <td style="text-align:center;">${r.torre}</td>
+            <td style="text-align:center;">${r.nivel}</td>
+            <td>${r.unidad}</td>
+            <td style="font-weight:600;">${r.partida}</td>
+            <td>${r.sup}</td>
+            <td style="text-align:center; font-weight:700;">${r.pct}%</td>
+            <td style="text-align:center; white-space:nowrap;">[ &nbsp; ] Cumple &nbsp;&nbsp; [ &nbsp; ] No Cumple</td>
+          </tr>
+        `;
+      });
+
+      const printWin = window.open('', '_blank', 'width=1100,height=800');
+      printWin.document.write(`
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+          <meta charset="UTF-8">
+          <title>Reporte PAC Semanal - Proyecto Newen Antu</title>
+          <style>
+            body { font-family: 'Segoe UI', Arial, sans-serif; background: #ffffff; color: #111827; padding: 30px; }
+            .report-header {
+              display: flex; justify-content: space-between; align-items: flex-start;
+              border-bottom: 3px solid #F5A524; padding-bottom: 14px; margin-bottom: 20px;
+            }
+            .corp-title h1 { color: #2A2F36; font-size: 20px; margin: 0 0 4px 0; text-transform: uppercase; }
+            .corp-title h2 { color: #F5A524; font-size: 14px; margin: 0 0 4px 0; }
+            .corp-title p { color: #4B5563; font-size: 12px; margin: 0; }
+            .meta-box { text-align: right; font-size: 12px; color: #1F2937; }
+            .meta-box strong { color: #2A2F36; }
+            .print-actions { margin-bottom: 15px; display: flex; gap: 10px; }
+            .btn-p {
+              background: #2A2F36; color: #fff; border: none; padding: 8px 16px;
+              border-radius: 4px; cursor: pointer; font-weight: 700; font-size: 13px;
+            }
+            table { width: 100%; border-collapse: collapse; font-size: 12px; }
+            th {
+              background: #2A2F36; color: #ffffff; padding: 9px 8px;
+              border: 1px solid #2A2F36; text-transform: uppercase; font-size: 11px;
+            }
+            td { padding: 8px; border: 1px solid #CBD5E1; }
+            tr:nth-child(even) { background: #F8FAFC; }
+            .signatures {
+              margin-top: 55px; display: flex; justify-content: space-around; text-align: center; font-size: 12px;
+            }
+            .sig-line { width: 220px; border-top: 1px solid #111827; padding-top: 6px; font-weight: 700; }
+            @media print {
+              .print-actions { display: none; }
+              body { padding: 0; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="print-actions">
+            <button class="btn-p" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+          </div>
+          <div class="report-header">
+            <div class="corp-title">
+              <h1>PROYECTO NEWEN ANTU (80 DEPTOS)</h1>
+              <h2>PLANIFICACIÓN SEMANAL LPS — COMPROMISOS PAC</h2>
+              <p>Módulo: Control de Cierres, Tabiques y Envolvente | Tren: T5 → T1 → T2 → T4 → T3</p>
+            </div>
+            <div class="meta-box">
+              <div><strong>Fecha Emisión:</strong> ${today}</div>
+              <div><strong>Total Partidas Comprometidas:</strong> ${pacRows.length}</div>
+              <div><strong>Sistema:</strong> Tablero de Obra v7</div>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width:35px;">#</th>
+                <th style="width:115px;">Código Frente</th>
+                <th style="width:55px;">Torre</th>
+                <th style="width:55px;">Nivel</th>
+                <th style="width:115px;">Unidad</th>
+                <th>Partida Comprometida (PAC Semanal)</th>
+                <th style="width:130px;">Supervisor Asignado</th>
+                <th style="width:70px;">% Inicial</th>
+                <th style="width:185px;">Verificación Cierre</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+          <div class="signatures">
+            <div class="sig-line">Jefe Oficina Técnica</div>
+            <div class="sig-line">Jefe de Terreno</div>
+            <div class="sig-line">Administrador de Obra</div>
+          </div>
+        </body>
+        </html>
+      `);
+      printWin.document.close();
+    }
+
+    /*************************************************************************
+     * 10. LIMPIAR PLANIFICACIÓN ACTUAL
+     *************************************************************************/
+    function clearAllPAC() {
+      if (!confirm('¿Estás seguro de desmarcar todos los compromisos PAC y resetear los supervisores de todo el proyecto? (Los porcentajes de avance físico se mantendrán intactos).')) {
+        return;
+      }
+
+      TOWERS.forEach(t => {
+        const tObj = projectData[t];
+        LISTADO_D.forEach(task => {
+          tObj.torreTasks[task.id].pac = false;
+          tObj.torreTasks[task.id].sup = 'Sin Asignar';
+        });
+        LEVELS.forEach(n => {
+          const lObj = tObj.levels[n];
+          LISTADO_C.forEach(task => {
+            lObj.fachTasks[task.id].pac = false;
+            lObj.fachTasks[task.id].sup = 'Sin Asignar';
+          });
+          UNITS_DEPTOS.forEach(u => {
+            LISTADO_A.forEach(task => {
+              lObj.units[u][task.id].pac = false;
+              lObj.units[u][task.id].sup = 'Sin Asignar';
+            });
+          });
+          LISTADO_B.forEach(task => {
+            lObj.units.COMUN[task.id].pac = false;
+            lObj.units.COMUN[task.id].sup = 'Sin Asignar';
+          });
+        });
+      });
+
+      saveData();
+      renderAll();
+    }
+
+    // Inicializar aplicación al cargar
+    window.addEventListener('DOMContentLoaded', () => {
+      initData();
+      initUIControls();
+      renderAll();
+    });
+  </script>
+</body>
+</html>

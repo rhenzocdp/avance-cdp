@@ -1,0 +1,1705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Obra gruesa · Newen Antu · Tablero de Obra</title>
+  <style>
+    :root {
+      --bg-main: #121416;
+      --bg-panel: #1A1D21;
+      --bg-card: #22262B;
+      --brand-blue: #2A2F36;
+      --brand-red: #F5A524;
+      --accent-blue: #3A414A;
+      --text-light: #f0f4f8;
+      --text-muted: #94a3b8;
+      --border-color: #30353C;
+      --sem-0: #F8696B;
+      --sem-50: #FFEB84;
+      --sem-100: #63BE7B;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-light);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* HEADER & BARRA DE HERRAMIENTAS */
+    header {
+      background: linear-gradient(90deg, var(--brand-blue) 0%, #16191D 70%, var(--brand-red) 100%);
+      border-bottom: 2px solid var(--brand-red);
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      z-index: 10;
+    }
+
+    .brand-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .btn-portal {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      text-decoration: none;
+      padding: 7px 13px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-portal:hover {
+      background-color: var(--brand-red);
+      border-color: #FCD385;
+    }
+
+    .title-block h1 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .title-block p {
+      font-size: 0.76rem;
+      color: #cbd5e1;
+    }
+
+    /* BARRA DE PROGRAMACIÓN RÁPIDA Y ACCIONES */
+    .quick-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(18, 20, 22, 0.75);
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      flex-wrap: wrap;
+    }
+
+    .quick-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #FFEB84;
+      cursor: pointer;
+      padding-right: 8px;
+      border-right: 1px solid var(--border-color);
+    }
+
+    .quick-toggle input {
+      accent-color: var(--brand-red);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .quick-select {
+      background: var(--bg-card);
+      color: var(--text-light);
+      border: 1px solid var(--border-color);
+      padding: 5px 9px;
+      border-radius: 5px;
+      font-size: 0.78rem;
+      outline: none;
+    }
+
+    .action-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-action {
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn-pac {
+      background-color: #2A2F36;
+      color: #fff;
+      border-color: #F5A524;
+    }
+
+    .btn-pac:hover {
+      background-color: #3A414A;
+    }
+
+    .btn-clean {
+      background-color: #B8740A;
+      color: #fff;
+      border-color: #FCD385;
+    }
+
+    .btn-clean:hover {
+      background-color: var(--brand-red);
+    }
+
+    /* LAYOUT 3 COLUMNAS */
+    .workspace {
+      display: grid;
+      grid-template-columns: 310px 1fr 390px;
+      flex: 1;
+      overflow: hidden;
+      gap: 1px;
+      background-color: var(--border-color);
+    }
+
+    .panel {
+      background-color: var(--bg-panel);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      background-color: var(--brand-blue);
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--brand-red);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-body {
+      padding: 12px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    /* COLUMNA 1: MATRIZ NAVEGACIÓN + CAPAS CAD */
+    .tower-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 7px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .tower-title {
+      background: rgba(42, 47, 54, 0.7);
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .tower-title span.badge-fnd {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #000;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .levels-grid {
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .level-row {
+      display: grid;
+      grid-template-columns: 42px 1fr 1fr;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .level-label {
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .cycle-btn {
+      padding: 4px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #121416;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.1s, box-shadow 0.15s;
+    }
+
+    .cycle-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .cycle-btn.active {
+      outline: 2px solid #ffffff;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+    }
+
+    .cad-layers-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 7px;
+      padding: 10px 12px;
+      margin-top: 12px;
+    }
+
+    .cad-layers-box h3 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      color: #FCD385;
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 4px;
+    }
+
+    .layer-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      margin-bottom: 6px;
+      cursor: pointer;
+    }
+
+    .layer-check input {
+      accent-color: var(--brand-red);
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+    }
+
+    .layer-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    /* COLUMNA 2: VISOR SVG CENTRAL */
+    .viewer-container {
+      position: relative;
+      flex: 1;
+      background: radial-gradient(circle at center, #1A1D21 0%, #0D0F11 100%);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .viewer-hud {
+      position: absolute;
+      top: 12px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .hud-badge {
+      background: rgba(42, 47, 54, 0.88);
+      border: 1px solid var(--brand-red);
+      padding: 8px 14px;
+      border-radius: 7px;
+      pointer-events: auto;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+    }
+
+    .hud-badge h2 {
+      font-size: 0.95rem;
+      color: #fff;
+    }
+
+    .hud-badge p {
+      font-size: 0.76rem;
+      color: #cbd5e1;
+      margin-top: 2px;
+    }
+
+    .hud-controls {
+      display: flex;
+      gap: 6px;
+      pointer-events: auto;
+    }
+
+    .hud-btn {
+      background: rgba(34, 38, 43, 0.9);
+      color: var(--text-light);
+      border: 1px solid var(--border-color);
+      padding: 6px 10px;
+      border-radius: 5px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .hud-btn:hover {
+      background: var(--brand-blue);
+      border-color: #FCD385;
+    }
+
+    .svg-stage {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+    }
+
+    .svg-stage:active {
+      cursor: grabbing;
+    }
+
+    .cycle-poly {
+      cursor: pointer;
+      transition: fill 0.25s, stroke-width 0.2s, fill-opacity 0.2s;
+    }
+
+    .cycle-poly:hover {
+      fill-opacity: 0.68;
+      stroke: #ffffff;
+      stroke-width: 12;
+    }
+
+    .cycle-poly.selected-poly {
+      stroke: #ffffff;
+      stroke-width: 14;
+      stroke-dasharray: none;
+    }
+
+    .viewer-legend {
+      background: rgba(26, 29, 33, 0.95);
+      border-top: 1px solid var(--border-color);
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.76rem;
+    }
+
+    .semaphore-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .gradient-pill {
+      width: 150px;
+      height: 10px;
+      border-radius: 5px;
+      background: linear-gradient(90deg, #F8696B 0%, #FFEB84 50%, #63BE7B 100%);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    /* COLUMNA 3: PANEL DERECHO DE EDICIÓN */
+    .tabs-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      background: #15181B;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .tab-btn {
+      padding: 11px 8px;
+      background: transparent;
+      color: var(--text-muted);
+      border: none;
+      border-bottom: 3px solid transparent;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .tab-btn.active {
+      color: #fff;
+      background: var(--bg-card);
+      border-bottom-color: var(--brand-red);
+    }
+
+    .summary-banner {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 7px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .summary-banner .info h4 {
+      font-size: 0.85rem;
+      color: #fff;
+    }
+
+    .summary-banner .info span {
+      font-size: 0.73rem;
+      color: var(--text-muted);
+    }
+
+    .summary-score {
+      font-size: 1.25rem;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 6px;
+      color: #121416;
+      min-width: 68px;
+      text-align: center;
+    }
+
+    .section-divider {
+      background: rgba(245, 165, 36, 0.22);
+      border-left: 3px solid var(--brand-red);
+      padding: 5px 10px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      color: #FCD385;
+      margin: 10px 0 8px 0;
+      text-transform: uppercase;
+    }
+
+    .task-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 9px 11px;
+      margin-bottom: 8px;
+      transition: border-color 0.2s;
+    }
+
+    .task-card.pac-active {
+      border-color: #FFEB84;
+      box-shadow: inset 0 0 0 1px rgba(255, 235, 132, 0.35);
+    }
+
+    .task-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      gap: 6px;
+    }
+
+    .task-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-light);
+    }
+
+    .task-weight {
+      font-size: 0.7rem;
+      color: #FCD385;
+      background: rgba(42, 47, 54, 0.8);
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .slider-row input[type="range"] {
+      flex: 1;
+      height: 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      accent-color: var(--brand-blue);
+    }
+
+    .pct-pill {
+      font-size: 0.76rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      min-width: 48px;
+      text-align: center;
+      color: #121416;
+    }
+
+    .lps-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 6px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.1);
+      font-size: 0.75rem;
+    }
+
+    .pac-check-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      color: #e2e8f0;
+      font-weight: 600;
+    }
+
+    .pac-check-label input {
+      accent-color: var(--brand-red);
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+    }
+
+    .sup-select {
+      background: #15181B;
+      color: var(--text-light);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 3px 7px;
+      font-size: 0.73rem;
+    }
+
+    /* MODAL DE EXPORTACIÓN PAC IMPRIMIBLE */
+    .pac-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      padding: 24px;
+    }
+
+    .pac-modal-overlay.open {
+      display: flex;
+    }
+
+    .pac-sheet {
+      background: #ffffff;
+      color: #0f172a;
+      width: 100%;
+      max-width: 1050px;
+      max-height: 90vh;
+      border-radius: 8px;
+      overflow-y: auto;
+      padding: 28px 34px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    }
+
+    .pac-sheet-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .pac-header-corp {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid #2A2F36;
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+    }
+
+    .pac-header-corp h2 {
+      color: #2A2F36;
+      font-size: 1.35rem;
+      text-transform: uppercase;
+    }
+
+    .pac-header-corp p {
+      color: #475569;
+      font-size: 0.85rem;
+    }
+
+    .pac-meta {
+      text-align: right;
+      font-size: 0.82rem;
+      color: #334155;
+    }
+
+    table.pac-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+      margin-top: 10px;
+    }
+
+    table.pac-table th {
+      background-color: #2A2F36;
+      color: #ffffff;
+      text-align: left;
+      padding: 9px 10px;
+      border: 1px solid #cbd5e1;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+    }
+
+    table.pac-table td {
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      color: #1e293b;
+    }
+
+    table.pac-table tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .sign-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin-top: 45px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #334155;
+    }
+
+    .sign-line {
+      border-top: 1px solid #475569;
+      padding-top: 6px;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #pacModal, #pacModal * {
+        visibility: visible;
+      }
+      #pacModal {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: #ffffff;
+        padding: 0;
+      }
+      .pac-sheet {
+        box-shadow: none;
+        max-height: none;
+        width: 100%;
+        max-width: 100%;
+        padding: 10px;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA SUPERIOR -->
+  <header>
+    <div class="brand-info">
+      <a href="index.html" class="btn-portal">☀ Tablero de Obra</a>
+      <div class="title-block">
+        <h1>Proyecto Newen Antu (80 Deptos) — Obra Gruesa: Estructura y Fundaciones</h1>
+        <p>Plan de ataque: T5 → T1 → T2 → T4 → T3 | Planta Estructural Cielo Tipo CAD (DXF AC1032)</p>
+      </div>
+    </div>
+
+    <!-- PROGRAMACIÓN RÁPIDA + BOTONES -->
+    <div class="quick-bar">
+      <label class="quick-toggle" title="Al activar, haz clic en Ciclo 1 o Ciclo 2 del plano para programar automáticamente la partida seleccionada">
+        <input type="checkbox" id="quickModeToggle" />
+        ⚡ Modo Prog. Rápida
+      </label>
+      <select id="quickTaskSelect" class="quick-select" title="Partida Global para Programación Rápida"></select>
+      <select id="quickSupSelect" class="quick-select" title="Supervisor Global para Programación Rápida"></select>
+
+      <div class="action-buttons">
+        <button class="btn-action btn-pac" onclick="openPacModal()">🗓️ PAC de la semana</button>
+        <button class="btn-action btn-clean" onclick="clearCurrentPlanning()">🧹 Limpiar Planificación Actual</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- LAYOUT 3 COLUMNAS -->
+  <div class="workspace">
+
+    <!-- COLUMNA 1: MATRIZ DE NAVEGACIÓN + CAPAS CAD -->
+    <aside class="panel">
+      <div class="panel-header">
+        <span>Matriz de Control (5T × 4N × 2C)</span>
+        <span id="globalProgressBadge" style="font-size:0.78rem; background:#121416; padding:2px 7px; border-radius:4px;">0%</span>
+      </div>
+      <div class="panel-body">
+        <div id="matrixContainer"></div>
+
+        <div class="cad-layers-box">
+          <h3>Capas CAD Visibles (DXF)</h3>
+          <label class="layer-check">
+            <input type="checkbox" id="chkLayerEjes" checked onchange="toggleCadLayers()" />
+            <span class="layer-swatch" style="background:#E5534B;"></span>
+            Ejes Estructurales (S-GRID)
+          </label>
+          <label class="layer-check">
+            <input type="checkbox" id="chkLayerVigas" checked onchange="toggleCadLayers()" />
+            <span class="layer-swatch" style="background:#F5A524;"></span>
+            Vigas Invertidas y Muros (S-BEAM / A-WALL)
+          </label>
+          <label class="layer-check">
+            <input type="checkbox" id="chkLayerTextos" checked onchange="toggleCadLayers()" />
+            <span class="layer-swatch" style="background:#fde047;"></span>
+            Textos y Nomenclatura (S-BEAM-IDEN)
+          </label>
+        </div>
+      </div>
+    </aside>
+
+    <!-- COLUMNA 2: VISOR SVG CENTRAL -->
+    <main class="panel">
+      <div class="viewer-container">
+        <div class="viewer-hud">
+          <div class="hud-badge">
+            <h2 id="hudActiveTitle">TORRE 5 — NIVEL 1</h2>
+            <p id="hudActiveSubtitle">Planta Estructura Cielo | Clic en Polígono Oriente (C1) o Poniente (C2)</p>
+          </div>
+          <div class="hud-controls">
+            <button class="hud-btn" onclick="zoomSvg(1.2)">➕ Zoom</button>
+            <button class="hud-btn" onclick="zoomSvg(0.85)">➖ Alejar</button>
+            <button class="hud-btn" onclick="resetView()">🎯 Centrar Plano</button>
+          </div>
+        </div>
+
+        <svg id="cadSvg" class="svg-stage" viewBox="100 100 2250 1650" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <pattern id="hatchShaft" width="20" height="20" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+              <line x1="0" y1="0" x2="0" y2="20" stroke="#475569" stroke-width="2" />
+            </pattern>
+          </defs>
+
+          <g id="viewportGroup">
+            <!-- CAPA 1: EJES ESTRUCTURALES EXTRAÍDOS DEL DXF -->
+            <g id="layer-ejes"></g>
+
+            <!-- CAPA 2: MUROS, LOSAS, SHAFTS Y VIGAS INVERTIDAS (S-BEAM / A-WALL / Balconlosa) -->
+            <g id="layer-vigas"></g>
+
+            <!-- CAPA INTERACTIVA LPS: POLÍGONOS CICLO 1 (ORIENTE) Y CICLO 2 (PONIENTE) -->
+            <g id="layer-ciclos">
+              <!-- Ciclo 2 Poniente (Lado Izquierdo DXF X: 256.85 -> 1219.99) -->
+              <polygon id="poly-C2" class="cycle-poly"
+                points="256.85,551.84 1219.99,551.84 1219.99,1513.55 256.85,1513.55"
+                onclick="handlePolygonClick('C2')" />
+
+              <!-- Ciclo 1 Oriente (Lado Derecho DXF X: 1219.99 -> 2088.85) -->
+              <polygon id="poly-C1" class="cycle-poly"
+                points="1219.99,551.84 2088.85,551.84 2088.85,1513.55 1219.99,1513.55"
+                onclick="handlePolygonClick('C1')" />
+            </g>
+
+            <!-- CAPA 3: TEXTOS ESTRUCTURALES E INDICADORES -->
+            <g id="layer-textos"></g>
+
+            <!-- ETIQUETAS DINÁMICAS DE AVANCE SOBRE LOS CICLOS -->
+            <g id="layer-kpis" pointer-events="none">
+              <rect x="585" y="965" width="310" height="115" rx="12" fill="rgba(18, 20, 22, 0.86)" stroke="#2A2F36" stroke-width="4" />
+              <text x="740" y="1008" text-anchor="middle" fill="#FCD385" font-size="28" font-weight="bold">CICLO 2 (PONIENTE)</text>
+              <text id="svg-pct-C2" x="740" y="1058" text-anchor="middle" fill="#ffffff" font-size="42" font-weight="800">0%</text>
+
+              <rect x="1495" y="965" width="310" height="115" rx="12" fill="rgba(18, 20, 22, 0.86)" stroke="#2A2F36" stroke-width="4" />
+              <text x="1650" y="1008" text-anchor="middle" fill="#FCD385" font-size="28" font-weight="bold">CICLO 1 (ORIENTE)</text>
+              <text id="svg-pct-C1" x="1650" y="1058" text-anchor="middle" fill="#ffffff" font-size="42" font-weight="800">0%</text>
+            </g>
+          </g>
+        </svg>
+
+        <div class="viewer-legend">
+          <div>
+            <strong>Geometría DXF Real:</strong> Ejes A–M / 1–19 | Polígonos <code>ciclo 1</code> y <code>ciclo 2</code> | Vigas <code>S-BEAM</code>
+          </div>
+          <div class="semaphore-bar">
+            <span>0% (#F8696B)</span>
+            <div class="gradient-pill"></div>
+            <span>50% (#FFEB84)</span>
+            <span>➔ 100% (#63BE7B)</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- COLUMNA 3: PANEL DERECHO DE EDICIÓN -->
+    <aside class="panel">
+      <div class="tabs-bar">
+        <button id="tabBtn-C1" class="tab-btn active" onclick="switchTab('C1')">Ciclo 1 (Oriente)</button>
+        <button id="tabBtn-C2" class="tab-btn" onclick="switchTab('C2')">Ciclo 2 (Poniente)</button>
+        <button id="tabBtn-FND" class="tab-btn" onclick="switchTab('FND')">Fundaciones</button>
+      </div>
+      <div class="panel-body" id="editorContainer"></div>
+    </aside>
+
+  </div>
+
+  <!-- MODAL REPORTE PAC IMPRIMIBLE -->
+  <div id="pacModal" class="pac-modal-overlay">
+    <div class="pac-sheet">
+      <div class="pac-sheet-actions no-print">
+        <button class="btn-action btn-pac" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+        <button class="btn-action btn-clean" onclick="closePacModal()">✖ Cerrar</button>
+      </div>
+      <div class="pac-header-corp">
+        <div>
+          <h2>Plan Semanal de Compromisos (PAC) — Last Planner System</h2>
+          <p><strong>Proyecto:</strong> Proyecto Newen Antu (80 Deptos) | <strong>Módulo:</strong> Obra Gruesa: Estructura y Fundaciones</p>
+          <p><strong>Secuencia Tren de Trabajo:</strong> T5 → T1 → T2 → T4 → T3</p>
+        </div>
+        <div class="pac-meta">
+          <div><strong>Fecha Emisión:</strong> <span id="pacDateStr"></span></div>
+          <div><strong>Total Partidas Programadas:</strong> <span id="pacCountStr">0</span></div>
+        </div>
+      </div>
+
+      <table class="pac-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Torre</th>
+            <th>Frente / Nivel</th>
+            <th>Unidad de Control</th>
+            <th>Partida Comprometida</th>
+            <th>Incidencia</th>
+            <th>Supervisor / Subcontrato</th>
+            <th>Avance Actual</th>
+            <th>Cumple (Sí/No)</th>
+          </tr>
+        </thead>
+        <tbody id="pacTableBody"></tbody>
+      </table>
+
+      <div class="sign-grid">
+        <div class="sign-line">Jefe Oficina Técnica</div>
+        <div class="sign-line">Jefe de Terreno Obra Gruesa</div>
+        <div class="sign-line">Administrador de Obra</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="datos.js"></script>
+  <script>
+    /*************************************************************************
+     * BLOQUE 1: PARÁMETROS DEL MÓDULO Y UNIDADES DE CONTROL
+     *************************************************************************/
+    const STORAGE_KEY = 'NA_V7_OBRA_GRUESA';
+    const TOWERS = ['T5', 'T1', 'T2', 'T4', 'T3'];
+    const LEVELS = ['N1', 'N2', 'N3', 'N4'];
+
+    const SUPERVISORS = ['Ignacio Fuentes', 'Sin Asignar'];
+
+    // LISTADO A: Fundaciones por Torre Completa (Pesos equitativos 25%)
+    const LISTADO_A_FUNDACIONES = [
+      // Pesos provisorios: reemplazar por la valorización de Foco
+      { id: 'F0', name: '1. Rellenos controlados', pizarra: 'Rellenos controlados', weight: 10, group: 'FUNDACIONES POR TORRE' },
+      { id: 'F1', name: '2. Compactación sello fundación', pizarra: 'Compactación sello fundación', weight: 10, group: 'FUNDACIONES POR TORRE' },
+      { id: 'F2', name: '3. Emplantillado viga/losa', pizarra: 'Emplantillado viga/losa', weight: 10, group: 'FUNDACIONES POR TORRE' },
+      { id: 'F3', name: '4. Enfierradura fundaciones', pizarra: 'Enfierradura fundaciones', weight: 20, group: 'FUNDACIONES POR TORRE' },
+      { id: 'F4', name: '5. Enf. vertical muro/pilar', pizarra: 'Enf. vertical muro/pilar', weight: 10, group: 'FUNDACIONES POR TORRE' },
+      { id: 'F5', name: '6. Inst. sanitaria fundación', pizarra: 'Inst. sanitaria fundación', weight: 5, group: 'FUNDACIONES POR TORRE' },
+      { id: 'F6', name: '7. Moldaje viga', pizarra: 'Moldaje viga', weight: 15, group: 'FUNDACIONES POR TORRE' },
+      { id: 'F7', name: '8. Hormigón viga', pizarra: 'Hormigón viga', weight: 20, group: 'FUNDACIONES POR TORRE' }
+    ];
+
+    // LISTADO B: Por Ciclo C1 y C2 (Muros y Losas)
+    const LISTADO_B_CICLOS = [
+      // Orden constructivo; pesos provisorios hasta tener los de Foco
+      { id: 'M1', name: '1. Enfierradura muros/pilares', pizarra: 'Enfierradura', weight: 12, group: 'MUROS Y PILARES' },
+      { id: 'M2', name: '2. Inst. sanitaria muros', pizarra: 'Inst. sanitaria muros', weight: 3, group: 'MUROS Y PILARES' },
+      { id: 'M3', name: '3. Inst. eléctrica muros', pizarra: 'Inst. eléctrica muros', weight: 3, group: 'MUROS Y PILARES' },
+      { id: 'M4', name: '4. Moldaje muros', pizarra: 'Moldajes', weight: 12, group: 'MUROS Y PILARES' },
+      { id: 'M5', name: '5. Hormigón muros', pizarra: 'Hormigón', weight: 15, group: 'MUROS Y PILARES' },
+      { id: 'M6', name: '6. Descimbre muros', pizarra: 'Descimbre', weight: 5, group: 'MUROS Y PILARES' },
+      { id: 'L1', name: '7. Moldaje losa', pizarra: 'Moldaje losa', weight: 15, group: 'LOSA DE CIELO' },
+      { id: 'L2', name: '8. Enfierradura losa', pizarra: 'Enfierradura losa', weight: 12, group: 'LOSA DE CIELO' },
+      { id: 'L3', name: '9. Inst. sanitaria losa', pizarra: 'Inst. sanitaria losas', weight: 4, group: 'LOSA DE CIELO' },
+      { id: 'L4', name: '10. Inst. eléctrica losa', pizarra: 'Inst. eléctrica losas', weight: 4, group: 'LOSA DE CIELO' },
+      { id: 'L5', name: '11. Hormigón losa', pizarra: 'Hormigón losa', weight: 15, group: 'LOSA DE CIELO' }
+    ];
+
+    /*************************************************************************
+     * GEOMETRÍA EXTRAÍDA DEL DXF ADJUNTO (Coordenadas normalizadas al visor)
+     * Y_svg = 2100 - Y_dxf para mantener orientación exacta del plano
+     *************************************************************************/
+    const DXF_GEOMETRY = {
+      vAxes: [
+        { x: 374.16, label: '1' }, { x: 432.16, label: '2' }, { x: 641.16, label: '3' },
+        { x: 684.66, label: '4' }, { x: 782.16, label: '5' }, { x: 939.16, label: '6' },
+        { x: 969.16, label: '7' }, { x: 1094.16, label: '8' }, { x: 1207.16, label: '9' },
+        { x: 1235.16, label: '10' }, { x: 1348.16, label: '11' }, { x: 1473.16, label: '12' },
+        { x: 1503.16, label: '13' }, { x: 1660.16, label: '14' }, { x: 1757.66, label: '15' },
+        { x: 1801.16, label: '16' }, { x: 2010.16, label: '17' }, { x: 2068.16, label: '18' },
+        { x: 2083.16, label: '19' }
+      ],
+      hAxes: [
+        { y: 632.91, label: 'M' }, { y: 647.91, label: 'L' }, { y: 749.91, label: 'K' },
+        { y: 929.91, label: 'J' }, { y: 969.91, label: 'I' }, { y: 1016.41, label: 'H' },
+        { y: 1044.91, label: 'G' }, { y: 1089.91, label: 'F' }, { y: 1129.91, label: 'E' },
+        { y: 1317.41, label: 'D' }, { y: 1419.41, label: 'C' }, { y: 1434.41, label: 'B' },
+        { y: 1479.41, label: 'A' }
+      ],
+      wallsAndSlabs: [
+        // Contorno exterior de losas y balcones extraídos de A-FLOR y Balconlosa
+        [279.16,742.41, 366.66,742.41, 366.66,640.41, 684.66,640.41, 684.66,625.41, 976.66,625.41, 976.66,640.41, 976.66,977.41, 1465.66,977.41, 1465.66,640.41, 1757.66,640.41, 1757.66,625.41, 2075.66,625.41, 2075.66,742.41, 2090.66,742.41, 2090.66,1441.91, 1757.66,1441.91, 1757.66,1426.91, 1465.66,1426.91, 1465.66,1097.41, 1340.66,1097.41, 1340.66,1324.91, 1101.66,1324.91, 1101.66,1097.41, 976.66,1097.41, 976.66,1426.91, 684.66,1426.91, 684.66,1441.91, 366.66,1441.91, 366.66,1324.91, 279.16,1324.91, 279.16,742.41],
+        // Balcones poniente y oriente
+        [264.16,742.41, 366.66,742.41, 366.66,942.41, 264.16,942.41, 264.16,742.41],
+        [264.16,1124.91, 366.66,1124.91, 366.66,1324.91, 264.16,1324.91, 264.16,1124.91],
+        [1988.16,742.41, 2090.66,742.41, 2090.66,942.41, 1988.16,942.41, 1988.16,742.41],
+        [1988.16,1124.91, 2090.66,1124.91, 2090.66,1324.91, 1988.16,1324.91, 1988.16,1124.91]
+      ],
+      beamsAndWallsLines: [
+        // Vigas invertidas y muros interiores (S-BEAM / A-WALL)
+        [366.66,640.41, 381.66,1441.91], [633.66,640.41, 648.66,1441.91],
+        [677.16,625.41, 692.16,1441.91], [931.66,625.41, 946.66,1426.91],
+        [961.66,625.41, 976.66,1426.91], [1086.66,977.41, 1101.66,1324.91],
+        [1199.66,977.41, 1214.66,1324.91], [1227.66,977.41, 1242.66,1324.91],
+        [1340.66,977.41, 1355.66,1324.91], [1465.66,640.41, 1480.66,1426.91],
+        [1495.66,640.41, 1510.66,1426.91], [1652.66,640.41, 1667.66,1426.91],
+        [1750.16,625.41, 1765.16,1441.91], [1793.66,625.41, 1808.66,1441.91],
+        [2002.66,625.41, 2017.66,1441.91], [2060.66,625.41, 2075.66,1441.91],
+        // Muros longitudinales y vigas S-BEAM horizontales
+        [366.66,640.41, 976.66,655.41], [1465.66,640.41, 2075.66,655.41],
+        [366.66,922.41, 976.66,937.41], [1465.66,922.41, 2075.66,937.41],
+        [366.66,1008.91, 976.66,1023.91], [1465.66,1008.91, 2075.66,1023.91],
+        [366.66,1082.41, 2075.66,1097.41],
+        [366.66,1122.41, 976.66,1137.41], [1465.66,1122.41, 2075.66,1137.41],
+        [366.66,1411.91, 976.66,1426.91], [1465.66,1411.91, 2075.66,1426.91]
+      ],
+      texts: [
+        { x: 1221, y: 525, text: 'PLANTA ESTRUCTURA CIELO 2° Y 3° PISOS (ESC 1:50)', size: 28, color: '#fde047' },
+        { x: 420,  y: 615, text: 'V.I. 20/52', size: 17, color: '#F5A524' },
+        { x: 830,  y: 615, text: 'V.I. 20/52', size: 17, color: '#F5A524' },
+        { x: 1610, y: 615, text: 'V.I. 20/52', size: 17, color: '#F5A524' },
+        { x: 1930, y: 615, text: 'V.I. 20/52', size: 17, color: '#F5A524' },
+        { x: 315,  y: 840, text: 'BALCÓN PONIENTE (e=15)', size: 15, color: '#f472b6' },
+        { x: 2038, y: 840, text: 'BALCÓN ORIENTE (e=15)', size: 15, color: '#f472b6' },
+        { x: 1221, y: 1185, text: 'CAJA ESCALERA / NÚCLEO', size: 18, color: '#fde047' },
+        { x: 520,  y: 790, text: 'LOSA H.A. e=15cm (RL)', size: 17, color: '#e2e8f0' },
+        { x: 810,  y: 790, text: 'LOSA H.A. e=15cm (RL)', size: 17, color: '#e2e8f0' },
+        { x: 1620, y: 790, text: 'LOSA H.A. e=15cm (RL)', size: 17, color: '#e2e8f0' },
+        { x: 1890, y: 790, text: 'LOSA H.A. e=15cm (RL)', size: 17, color: '#e2e8f0' },
+        { x: 520,  y: 1270, text: 'LOSA H.A. e=15cm (RL)', size: 17, color: '#e2e8f0' },
+        { x: 810,  y: 1270, text: 'LOSA H.A. e=15cm (RL)', size: 17, color: '#e2e8f0' },
+        { x: 1620, y: 1270, text: 'LOSA H.A. e=15cm (RL)', size: 17, color: '#e2e8f0' },
+        { x: 1890, y: 1270, text: 'LOSA H.A. e=15cm (RL)', size: 17, color: '#e2e8f0' },
+        { x: 660,  y: 1055, text: 'PASILLO PONIENTE', size: 15, color: '#94a3b8' },
+        { x: 1760, y: 1055, text: 'PASILLO ORIENTE', size: 15, color: '#94a3b8' },
+        { x: 520,  y: 1475, text: 'V.I. 20/52', size: 17, color: '#F5A524' },
+        { x: 1890, y: 1475, text: 'V.I. 20/52', size: 17, color: '#F5A524' }
+      ]
+    };
+
+    /*************************************************************************
+     * ESTADO GLOBAL DE LA APLICACIÓN
+     *************************************************************************/
+    let appState = {};
+    let currentTower = 'T5';
+    let currentLevel = 'N1';
+    let currentTab = 'C1'; // 'C1' | 'C2' | 'FND'
+
+    function createDefaultState() {
+      const data = {};
+      TOWERS.forEach(t => {
+        data[t] = {
+          fundaciones: {},
+          levels: {}
+        };
+        LISTADO_A_FUNDACIONES.forEach(task => {
+          data[t].fundaciones[task.id] = { progress: 0, pac: false, supervisor: 'Ignacio Fuentes' };
+        });
+        LEVELS.forEach(lvl => {
+          data[t].levels[lvl] = { C1: {}, C2: {} };
+          ['C1', 'C2'].forEach(cyc => {
+            LISTADO_B_CICLOS.forEach(task => {
+              data[t].levels[lvl][cyc][task.id] = { progress: 0, pac: false, supervisor: 'Ignacio Fuentes' };
+            });
+          });
+        });
+      });
+      return data;
+    }
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          appState = JSON.parse(saved);
+        } else {
+          appState = createDefaultState();
+          saveState();
+        }
+      } catch (e) {
+        appState = createDefaultState();
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+    }
+
+    /*************************************************************************
+     * SEMÁFORO CONTINUO INTERPOLADO
+     * 0% (#F8696B) -> 50% (#FFEB84) -> 100% (#63BE7B)
+     *************************************************************************/
+    function getSemaphoreColor(pct) {
+      const p = Math.max(0, Math.min(100, Number(pct) || 0));
+      const c0   = { r: 248, g: 105, b: 107 }; // #F8696B
+      const c50  = { r: 255, g: 235, b: 132 }; // #FFEB84
+      const c100 = { r: 99,  g: 190, b: 123 }; // #63BE7B
+
+      let r, g, b;
+      if (p <= 50) {
+        const t = p / 50;
+        r = Math.round(c0.r + (c50.r - c0.r) * t);
+        g = Math.round(c0.g + (c50.g - c0.g) * t);
+        b = Math.round(c0.b + (c50.b - c0.b) * t);
+      } else {
+        const t = (p - 50) / 50;
+        r = Math.round(c50.r + (c100.r - c50.r) * t);
+        g = Math.round(c50.g + (c100.g - c50.g) * t);
+        b = Math.round(c50.b + (c100.b - c50.b) * t);
+      }
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    /*************************************************************************
+     * CÁLCULO DE AVANCES PONDERADOS
+     *************************************************************************/
+    function calcCycleProgress(tower, level, cycle) {
+      const tasks = appState[tower].levels[level][cycle];
+      let total = 0;
+      LISTADO_B_CICLOS.forEach(item => {
+        const val = tasks[item.id]?.progress || 0;
+        total += (val * item.weight) / 100;
+      });
+      return Math.round(total);
+    }
+
+    function calcFundacionesProgress(tower) {
+      const tasks = appState[tower].fundaciones;
+      let total = 0;
+      LISTADO_A_FUNDACIONES.forEach(item => {
+        const val = tasks[item.id]?.progress || 0;
+        total += (val * item.weight) / 100;
+      });
+      return Math.round(total);
+    }
+
+    function calcGlobalProgress() {
+      let sum = 0;
+      let count = 0;
+      TOWERS.forEach(t => {
+        sum += calcFundacionesProgress(t);
+        count++;
+        LEVELS.forEach(l => {
+          sum += calcCycleProgress(t, l, 'C1');
+          sum += calcCycleProgress(t, l, 'C2');
+          count += 2;
+        });
+      });
+      return count ? Math.round(sum / count) : 0;
+    }
+
+    /*************************************************************************
+     * RENDERIZADO DE LA GEOMETRÍA CAD (DXF) EN EL SVG CENTRAL
+     *************************************************************************/
+    function buildCadSvgGeometry() {
+      const ejesGroup = document.getElementById('layer-ejes');
+      const vigasGroup = document.getElementById('layer-vigas');
+      const textosGroup = document.getElementById('layer-textos');
+
+      // 1. Ejes Verticales y Horizontales + Burbujas S-GRID-IDEN
+      let ejesHtml = '';
+      DXF_GEOMETRY.vAxes.forEach(ax => {
+        ejesHtml += `
+          <line x1="${ax.x}" y1="310" x2="${ax.x}" y2="1640" stroke="#E5534B" stroke-width="1.4" stroke-dasharray="18,6,4,6" opacity="0.65" />
+          <circle cx="${ax.x}" cy="280" r="21" fill="#1A1D21" stroke="#E5534B" stroke-width="2" />
+          <text x="${ax.x}" y="287" text-anchor="middle" fill="#FCD385" font-size="18" font-weight="bold">${ax.label}</text>
+        `;
+      });
+      DXF_GEOMETRY.hAxes.forEach(ax => {
+        ejesHtml += `
+          <line x1="200" y1="${ax.y}" x2="2190" y2="${ax.y}" stroke="#E5534B" stroke-width="1.4" stroke-dasharray="18,6,4,6" opacity="0.65" />
+          <circle cx="170" cy="${ax.y}" r="21" fill="#1A1D21" stroke="#E5534B" stroke-width="2" />
+          <text x="170" y="${ax.y + 6}" text-anchor="middle" fill="#FCD385" font-size="18" font-weight="bold">${ax.label}</text>
+        `;
+      });
+      ejesGroup.innerHTML = ejesHtml;
+
+      // 2. Muros, Losas y Vigas Invertidas
+      let vigasHtml = '';
+      DXF_GEOMETRY.wallsAndSlabs.forEach(poly => {
+        const pts = [];
+        for (let i = 0; i < poly.length; i += 2) {
+          pts.push(`${poly[i]},${poly[i + 1]}`);
+        }
+        vigasHtml += `<polyline points="${pts.join(' ')}" fill="rgba(15, 34, 64, 0.45)" stroke="#94a3b8" stroke-width="3" />`;
+      });
+
+      DXF_GEOMETRY.beamsAndWallsLines.forEach(b => {
+        const x = Math.min(b[0], b[2]);
+        const y = Math.min(b[1], b[3]);
+        const w = Math.max(8, Math.abs(b[2] - b[0]));
+        const h = Math.max(8, Math.abs(b[3] - b[1]));
+        vigasHtml += `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#F5A524" fill-opacity="0.35" stroke="#F5A524" stroke-width="2" />`;
+      });
+
+      // Shafts y vanos de losa extraídos del bloque TAG_SHAFT
+      const shafts = [
+        { x: 605, y: 940, w: 35, h: 45 },
+        { x: 900, y: 940, w: 35, h: 45 },
+        { x: 1510, y: 940, w: 35, h: 45 },
+        { x: 1805, y: 940, w: 35, h: 45 }
+      ];
+      shafts.forEach(s => {
+        vigasHtml += `<rect x="${s.x}" y="${s.y}" width="${s.w}" height="${s.h}" fill="url(#hatchShaft)" stroke="#64748b" stroke-width="2" />`;
+      });
+      vigasGroup.innerHTML = vigasHtml;
+
+      // 3. Textos y Nomenclatura
+      let textosHtml = '';
+      DXF_GEOMETRY.texts.forEach(t => {
+        textosHtml += `<text x="${t.x}" y="${t.y}" text-anchor="middle" fill="${t.color}" font-size="${t.size}" font-weight="700">${t.text}</text>`;
+      });
+      textosGroup.innerHTML = textosHtml;
+    }
+
+    function toggleCadLayers() {
+      document.getElementById('layer-ejes').style.display =
+        document.getElementById('chkLayerEjes').checked ? 'block' : 'none';
+      document.getElementById('layer-vigas').style.display =
+        document.getElementById('chkLayerVigas').checked ? 'block' : 'none';
+      document.getElementById('layer-textos').style.display =
+        document.getElementById('chkLayerTextos').checked ? 'block' : 'none';
+    }
+
+    /*************************************************************************
+     * RENDERIZADO DE INTERFAZ: MATRIZ IZQUIERDA, SVG CENTRAL Y PANEL DERECHO
+     *************************************************************************/
+    function renderAll() {
+      renderLeftMatrix();
+      renderCenterViewer();
+      renderRightEditor();
+      updateGlobalHeaderBadge();
+    }
+
+    function updateGlobalHeaderBadge() {
+      const globalPct = calcGlobalProgress();
+      const badge = document.getElementById('globalProgressBadge');
+      badge.title = badge.title || 'Avance físico de la estructura con pesos provisorios (no es el % de Foco)';
+      badge.textContent = `Avance estructura: ${globalPct}%`;
+      badge.style.backgroundColor = getSemaphoreColor(globalPct);
+      badge.style.color = '#121416';
+    }
+
+    function renderLeftMatrix() {
+      const container = document.getElementById('matrixContainer');
+      let html = '';
+
+      TOWERS.forEach(tower => {
+        const fndPct = calcFundacionesProgress(tower);
+        const fndColor = getSemaphoreColor(fndPct);
+        const isFndActive = (currentTower === tower && currentTab === 'FND');
+
+        html += `
+          <div class="tower-card">
+            <div class="tower-title">
+              <span>🏢 TORRE ${tower.replace('T', '')} (${tower})</span>
+              <span class="badge-fnd"
+                    style="background:${fndColor}; ${isFndActive ? 'outline:2px solid #fff;' : ''}"
+                    onclick="selectTowerFundaciones('${tower}')"
+                    title="Editar Fundaciones de ${tower}">
+                Fund: ${fndPct}%
+              </span>
+            </div>
+            <div class="levels-grid">
+        `;
+
+        // Mostrar niveles N4 a N1 de arriba hacia abajo como corte esquemático
+        [...LEVELS].reverse().forEach(lvl => {
+          const pctC2 = calcCycleProgress(tower, lvl, 'C2');
+          const pctC1 = calcCycleProgress(tower, lvl, 'C1');
+          const colC2 = getSemaphoreColor(pctC2);
+          const colC1 = getSemaphoreColor(pctC1);
+
+          const activeC2 = (currentTower === tower && currentLevel === lvl && currentTab === 'C2') ? 'active' : '';
+          const activeC1 = (currentTower === tower && currentLevel === lvl && currentTab === 'C1') ? 'active' : '';
+
+          html += `
+            <div class="level-row">
+              <span class="level-label">Nivel ${lvl.replace('N', '')}</span>
+              <button class="cycle-btn ${activeC2}" style="background:${colC2};"
+                      onclick="navigateUnit('${tower}', '${lvl}', 'C2')">
+                <span>C2 Pon.</span>
+                <span>${pctC2}%</span>
+              </button>
+              <button class="cycle-btn ${activeC1}" style="background:${colC1};"
+                      onclick="navigateUnit('${tower}', '${lvl}', 'C1')">
+                <span>C1 Ori.</span>
+                <span>${pctC1}%</span>
+              </button>
+            </div>
+          `;
+        });
+
+        html += `
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function renderCenterViewer() {
+      const pctC1 = calcCycleProgress(currentTower, currentLevel, 'C1');
+      const pctC2 = calcCycleProgress(currentTower, currentLevel, 'C2');
+
+      const polyC1 = document.getElementById('poly-C1');
+      const polyC2 = document.getElementById('poly-C2');
+
+      polyC1.setAttribute('fill', getSemaphoreColor(pctC1));
+      polyC1.setAttribute('fill-opacity', '0.48');
+      polyC1.setAttribute('stroke', getSemaphoreColor(pctC1));
+      polyC1.setAttribute('stroke-width', '8');
+
+      polyC2.setAttribute('fill', getSemaphoreColor(pctC2));
+      polyC2.setAttribute('fill-opacity', '0.48');
+      polyC2.setAttribute('stroke', getSemaphoreColor(pctC2));
+      polyC2.setAttribute('stroke-width', '8');
+
+      polyC1.classList.toggle('selected-poly', currentTab === 'C1');
+      polyC2.classList.toggle('selected-poly', currentTab === 'C2');
+
+      document.getElementById('svg-pct-C1').textContent = `${pctC1}%`;
+      document.getElementById('svg-pct-C1').setAttribute('fill', getSemaphoreColor(pctC1));
+
+      document.getElementById('svg-pct-C2').textContent = `${pctC2}%`;
+      document.getElementById('svg-pct-C2').setAttribute('fill', getSemaphoreColor(pctC2));
+
+      const hudTitle = document.getElementById('hudActiveTitle');
+      const hudSub = document.getElementById('hudActiveSubtitle');
+
+      if (currentTab === 'FND') {
+        const fndPct = calcFundacionesProgress(currentTower);
+        hudTitle.textContent = `TORRE ${currentTower.replace('T', '')} — FUNDACIONES ( Nivel Base: ${currentLevel} )`;
+        hudSub.textContent = `Avance Fundaciones Torre: ${fndPct}% | Visor mostrando planta estructural ${currentLevel}`;
+      } else {
+        const cycLabel = currentTab === 'C1' ? 'CICLO 1 (ORIENTE)' : 'CICLO 2 (PONIENTE)';
+        hudTitle.textContent = `TORRE ${currentTower.replace('T', '')} — NIVEL ${currentLevel.replace('N', '')} | ${cycLabel}`;
+        hudSub.textContent = `C1 Oriente: ${pctC1}%  |  C2 Poniente: ${pctC2}%  — Haz clic en los polígonos para editar o programar`;
+      }
+    }
+
+    function renderRightEditor() {
+      ['C1', 'C2', 'FND'].forEach(t => {
+        document.getElementById(`tabBtn-${t}`).classList.toggle('active', currentTab === t);
+      });
+
+      const container = document.getElementById('editorContainer');
+      let html = '';
+
+      if (currentTab === 'FND') {
+        const pct = calcFundacionesProgress(currentTower);
+        const semColor = getSemaphoreColor(pct);
+        html += `
+          <div class="summary-banner">
+            <div class="info">
+              <h4>TORRE ${currentTower.replace('T', '')} — FUNDACIONES</h4>
+              <span>Unidad de Control por Torre Completa</span>
+            </div>
+            <div class="summary-score" style="background:${semColor};">${pct}%</div>
+          </div>
+          <div class="section-divider">--- LISTADO A: FUNDACIONES ---</div>
+        `;
+
+        LISTADO_A_FUNDACIONES.forEach(task => {
+          const tData = appState[currentTower].fundaciones[task.id];
+          html += buildTaskCardHtml('FND', task, tData);
+        });
+      } else {
+        const pct = calcCycleProgress(currentTower, currentLevel, currentTab);
+        const semColor = getSemaphoreColor(pct);
+        const cycleName = currentTab === 'C1' ? 'Ciclo 1 (Oriente)' : 'Ciclo 2 (Poniente)';
+
+        html += `
+          <div class="summary-banner">
+            <div class="info">
+              <h4>${currentTower} • ${currentLevel} — ${cycleName}</h4>
+              <span>Unidad de Control por Ciclo (Muros y Losas)</span>
+            </div>
+            <div class="summary-score" style="background:${semColor};">${pct}%</div>
+          </div>
+        `;
+
+        let lastGroup = '';
+        LISTADO_B_CICLOS.forEach(task => {
+          if (task.group !== lastGroup) {
+            lastGroup = task.group;
+            html += `<div class="section-divider">-- ${lastGroup} --</div>`;
+          }
+          const tData = appState[currentTower].levels[currentLevel][currentTab][task.id];
+          html += buildTaskCardHtml(currentTab, task, tData);
+        });
+      }
+
+      container.innerHTML = html;
+    }
+
+    function buildTaskCardHtml(scope, task, tData) {
+      const pillColor = getSemaphoreColor(tData.progress);
+      const pacClass = tData.pac ? 'pac-active' : '';
+      const supOptions = SUPERVISORS.map(s =>
+        `<option value="${s}" ${tData.supervisor === s ? 'selected' : ''}>${s}</option>`
+      ).join('');
+
+      return `
+        <div class="task-card ${pacClass}">
+          <div class="task-top">
+            <span class="task-name">${task.name}</span>
+            <span class="task-weight">Peso: ${task.weight}%</span>
+          </div>
+          <div class="slider-row">
+            <input type="range" min="0" max="100" step="5" value="${tData.progress}"
+                   oninput="updateTaskProgress('${scope}', '${task.id}', this.value)" />
+            <span class="pct-pill" style="background:${pillColor};">${tData.progress}%</span>
+          </div>
+          <div class="lps-controls">
+            <label class="pac-check-label">
+              <input type="checkbox" ${tData.pac ? 'checked' : ''}
+                     onchange="updateTaskPac('${scope}', '${task.id}', this.checked)" />
+              Programar PAC
+            </label>
+            <select class="sup-select" onchange="updateTaskSupervisor('${scope}', '${task.id}', this.value)">
+              ${supOptions}
+            </select>
+          </div>
+        </div>
+      `;
+    }
+
+    /*************************************************************************
+     * INTERACCIONES DE USUARIO Y MODO DE PROGRAMACIÓN RÁPIDA
+     *************************************************************************/
+    function navigateUnit(tower, level, cycle) {
+      currentTower = tower;
+      currentLevel = level;
+      currentTab = cycle;
+      renderAll();
+    }
+
+    function selectTowerFundaciones(tower) {
+      currentTower = tower;
+      currentTab = 'FND';
+      renderAll();
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      renderAll();
+    }
+
+    function handlePolygonClick(cycle) {
+      const quickMode = document.getElementById('quickModeToggle').checked;
+      currentTab = cycle;
+
+      if (quickMode) {
+        const selectedTask = document.getElementById('quickTaskSelect').value;
+        const selectedSup = document.getElementById('quickSupSelect').value;
+
+        if (selectedTask.startsWith('F')) {
+          // Si eligió una partida de Fundaciones en la barra rápida
+          const ref = appState[currentTower].fundaciones[selectedTask];
+          ref.pac = !ref.pac;
+          ref.supervisor = selectedSup;
+          currentTab = 'FND';
+        } else {
+          // Partida de Ciclo (Muros/Losas)
+          const ref = appState[currentTower].levels[currentLevel][cycle][selectedTask];
+          ref.pac = !ref.pac;
+          ref.supervisor = selectedSup;
+        }
+        saveState();
+      }
+      renderAll();
+    }
+
+    function updateTaskProgress(scope, taskId, val) {
+      const num = parseInt(val, 10) || 0;
+      if (scope === 'FND') {
+        appState[currentTower].fundaciones[taskId].progress = num;
+      } else {
+        appState[currentTower].levels[currentLevel][scope][taskId].progress = num;
+      }
+      saveState();
+      renderAll();
+    }
+
+    function updateTaskPac(scope, taskId, checked) {
+      if (scope === 'FND') {
+        appState[currentTower].fundaciones[taskId].pac = checked;
+      } else {
+        appState[currentTower].levels[currentLevel][scope][taskId].pac = checked;
+      }
+      saveState();
+      renderRightEditor();
+    }
+
+    function updateTaskSupervisor(scope, taskId, sup) {
+      if (scope === 'FND') {
+        appState[currentTower].fundaciones[taskId].supervisor = sup;
+      } else {
+        appState[currentTower].levels[currentLevel][scope][taskId].supervisor = sup;
+      }
+      saveState();
+    }
+
+    /*************************************************************************
+     * CONTROLES DE ZOOM Y PANEO EN EL VISOR SVG
+     *************************************************************************/
+    let vb = { x: 100, y: 100, w: 2250, h: 1650 };
+    let isPanning = false;
+    let startPt = { x: 0, y: 0 };
+
+    const svgEl = document.getElementById('cadSvg');
+
+    function applyViewBox() {
+      svgEl.setAttribute('viewBox', `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
+    }
+
+    function zoomSvg(factor) {
+      const nw = vb.w / factor;
+      const nh = vb.h / factor;
+      vb.x += (vb.w - nw) / 2;
+      vb.y += (vb.h - nh) / 2;
+      vb.w = nw;
+      vb.h = nh;
+      applyViewBox();
+    }
+
+    function resetView() {
+      vb = { x: 100, y: 100, w: 2250, h: 1650 };
+      applyViewBox();
+    }
+
+    svgEl.addEventListener('mousedown', (e) => {
+      if (e.target.classList.contains('cycle-poly')) return;
+      isPanning = true;
+      startPt = { x: e.clientX, y: e.clientY };
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isPanning) return;
+      const dx = (e.clientX - startPt.x) * (vb.w / svgEl.clientWidth);
+      const dy = (e.clientY - startPt.y) * (vb.h / svgEl.clientHeight);
+      vb.x -= dx;
+      vb.y -= dy;
+      startPt = { x: e.clientX, y: e.clientY };
+      applyViewBox();
+    });
+
+    window.addEventListener('mouseup', () => {
+      isPanning = false;
+    });
+
+    svgEl.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      zoomSvg(e.deltaY < 0 ? 1.12 : 0.9);
+    }, { passive: false });
+
+    /*************************************************************************
+     * EXPORTACIÓN PAC SEMANAL Y LIMPIEZA DE PLANIFICACIÓN
+     *************************************************************************/
+    function openPacModal() {
+      const tbody = document.getElementById('pacTableBody');
+      const rows = [];
+      let index = 1;
+
+      TOWERS.forEach(t => {
+        // Revisar Fundaciones
+        LISTADO_A_FUNDACIONES.forEach(task => {
+          const item = appState[t].fundaciones[task.id];
+          if (item && item.pac) {
+            rows.push(`
+              <tr>
+                <td>${index++}</td>
+                <td><strong>${t}</strong></td>
+                <td>Torre Completa</td>
+                <td>Fundaciones</td>
+                <td>${task.name}</td>
+                <td>${task.weight}%</td>
+                <td>${item.supervisor}</td>
+                <td><strong>${item.progress}%</strong></td>
+                <td>[ &nbsp; ] Sí &nbsp; [ &nbsp; ] No</td>
+              </tr>
+            `);
+          }
+        });
+
+        // Revisar Niveles y Ciclos
+        LEVELS.forEach(lvl => {
+          ['C1', 'C2'].forEach(cyc => {
+            const cycName = cyc === 'C1' ? 'Ciclo 1 (Oriente)' : 'Ciclo 2 (Poniente)';
+            LISTADO_B_CICLOS.forEach(task => {
+              const item = appState[t].levels[lvl][cyc][task.id];
+              if (item && item.pac) {
+                rows.push(`
+                  <tr>
+                    <td>${index++}</td>
+                    <td><strong>${t}</strong></td>
+                    <td>Nivel ${lvl.replace('N', '')}</td>
+                    <td>${cycName}</td>
+                    <td>${task.name}</td>
+                    <td>${task.weight}%</td>
+                    <td>${item.supervisor}</td>
+                    <td><strong>${item.progress}%</strong></td>
+                    <td>[ &nbsp; ] Sí &nbsp; [ &nbsp; ] No</td>
+                  </tr>
+                `);
+              }
+            });
+          });
+        });
+      });
+
+      document.getElementById('pacDateStr').textContent = new Date().toLocaleDateString('es-CL', {
+        year: 'numeric', month: 'long', day: 'numeric'
+      });
+      document.getElementById('pacCountStr').textContent = rows.length;
+
+      if (rows.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="9" style="text-align:center; padding:22px; color:#64748b;">
+              No hay partidas marcadas con "[✓] Programar PAC". Activa compromisos en el panel derecho o usa el Modo de Programación Rápida.
+            </td>
+          </tr>
+        `;
+      } else {
+        tbody.innerHTML = rows.join('');
+      }
+
+      document.getElementById('pacModal').classList.add('open');
+    }
+
+    function closePacModal() {
+      document.getElementById('pacModal').classList.remove('open');
+    }
+
+    function clearCurrentPlanning() {
+      if (!confirm('¿Confirmas limpiar todos los avances y compromisos PAC guardados en este navegador?')) return;
+      appState = createDefaultState();
+      saveState();
+      renderAll();
+    }
+
+    /*************************************************************************
+     * INICIALIZACIÓN DE SELECTORES RÁPIDOS Y ARRANQUE
+     *************************************************************************/
+    function initQuickSelectors() {
+      const taskSel = document.getElementById('quickTaskSelect');
+      const supSel = document.getElementById('quickSupSelect');
+
+      let taskHtml = `<optgroup label="Ciclo 1 y 2 (Muros y Losas)">`;
+      LISTADO_B_CICLOS.forEach(t => {
+        taskHtml += `<option value="${t.id}">${t.name} (${t.weight}%)</option>`;
+      });
+      taskHtml += `</optgroup><optgroup label="Fundaciones (Torre)">`;
+      LISTADO_A_FUNDACIONES.forEach(t => {
+        taskHtml += `<option value="${t.id}">${t.name} (${t.weight}%)</option>`;
+      });
+      taskHtml += `</optgroup>`;
+      taskSel.innerHTML = taskHtml;
+
+      supSel.innerHTML = SUPERVISORS.map(s => `<option value="${s}">${s}</option>`).join('');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      initQuickSelectors();
+      buildCadSvgGeometry();
+      renderAll();
+      sincronizarPizarra();
+    });
+
+    // ===== v7: el avance y los compromisos vienen de la pizarra (script) =====
+    function openPacModal() { location.href = 'plan.html'; }
+
+    async function sincronizarPizarra() {
+      try {
+        const { datos: d, origen } = await NA.cargar();
+        const mapa = {};
+        LISTADO_A_FUNDACIONES.concat(LISTADO_B_CICLOS).forEach(t => mapa[NA.norm(t.pizarra)] = t.id);
+        const sup = d.config.supervisor || 'Sin asignar';
+        if (!SUPERVISORS.includes(sup)) SUPERVISORS.unshift(sup);
+        appState = createDefaultState();
+        TOWERS.forEach(t => {
+          Object.values(appState[t].fundaciones).forEach(x => x.supervisor = sup);
+          LEVELS.forEach(l => ['C1', 'C2'].forEach(c => Object.values(appState[t].levels[l][c]).forEach(x => x.supervisor = sup)));
+        });
+        Object.entries(d.estado || {}).forEach(([codigo, partidas]) => {
+          const u = NA.unidad(codigo);
+          if (!u || !appState[u.torre]) return;
+          Object.entries(partidas).forEach(([nombre, st]) => {
+            const id = mapa[NA.norm(nombre)];
+            if (!id) return;
+            const item = u.tipo === 'FUND' ? appState[u.torre].fundaciones[id]
+              : (appState[u.torre].levels[u.nivel] || {})[u.ciclo]?.[id];
+            if (!item) return;
+            if (st === 'hecho') item.progress = 100;
+            if (st === 'programado') item.pac = true;
+          });
+        });
+        saveState(); initQuickSelectors(); renderAll();
+        const b = document.getElementById('globalProgressBadge');
+        if (b) b.title = 'Fuente: ' + origen + ' · semana ' + d.semana.inicio + ' al ' + d.semana.fin;
+      } catch (e) { console.warn('Sin conexión con la pizarra:', e); }
+    }
+  </script>
+</body>
+</html>

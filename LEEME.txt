@@ -1,0 +1,19 @@
+NEWEN ANTU · TABLERO DE OBRA v7
+===============================
+
+INSTALAR (una sola vez, 5 minutos)
+1. Abrir la planilla "Pizarra Programación Intermedia - Newen Antu".
+2. Extensiones > Apps Script. Borrar lo que haya y pegar todo el contenido de script\Codigo.gs. Guardar.
+3. Implementar > Nueva implementación > tipo "Aplicación web".
+   - Ejecutar como: Yo
+   - Quién tiene acceso: Cualquier usuario
+   Autorizar cuando lo pida y copiar la URL (termina en /exec).
+4. Abrir datos.js y pegar la URL entre las comillas de SCRIPT_URL.
+5. Subir a Netlify todo lo que está en esta carpeta (menos la carpeta script).
+
+USO SEMANAL
+- Tú mandas a Claude la foto de la pizarra y del acta. Claude actualiza la hoja PIZARRA.
+- El visor se actualiza solo: plan.html muestra los compromisos y "Imprimir PAC / PDF" saca la hoja para el supervisor.
+- Supervisor, plan de ataque y firmas se cambian en la hoja CONFIG APP de la planilla.
+
+Si se cambia Codigo.gs: Implementar > Administrar implementaciones > editar > Nueva versión (la URL no cambia).

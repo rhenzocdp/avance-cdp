@@ -1,0 +1,65 @@
+/* Newen Antu · Tablero de Obra — tema común (grafito + sol) */
+:root {
+  --fondo: #121416;
+  --panel: #1a1d21;
+  --tarjeta: #22262b;
+  --linea: #30353c;
+  --texto: #ece7df;
+  --suave: #9aa1aa;
+  --sol: #f5a524;
+  --sol-claro: #fcd385;
+  --sol-osc: #b8740a;
+  --ok: #4fb477;
+  --prog: #f5a524;
+  --pend: #3a4048;
+  --rojo: #e5534b;
+  --radio: 10px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, Roboto, Arial, sans-serif;
+  background: var(--fondo); color: var(--texto); min-height: 100vh;
+}
+a { color: inherit; }
+
+/* Barra superior */
+.barra {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 12px 22px; background: var(--panel); border-bottom: 1px solid var(--linea);
+  position: sticky; top: 0; z-index: 20;
+}
+.marca { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.sol {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, var(--sol) 0 42%, transparent 43%),
+    repeating-conic-gradient(var(--sol) 0 10deg, transparent 10deg 30deg);
+  -webkit-mask: radial-gradient(circle, #000 0 70%, transparent 71%);
+          mask: radial-gradient(circle, #000 0 70%, transparent 71%);
+  flex: none;
+}
+.marca b { display: block; font-size: 15px; letter-spacing: .3px; }
+.marca small { color: var(--suave); font-size: 11.5px; letter-spacing: .4px; text-transform: uppercase; }
+.acciones { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none;
+  border: 1px solid var(--linea); background: var(--tarjeta); color: var(--texto);
+  padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+}
+.btn:hover { border-color: var(--sol); }
+.btn.sol-btn { background: var(--sol); color: #1b1305; border-color: var(--sol); }
+.btn.sol-btn:hover { background: var(--sol-claro); }
+
+.chip {
+  display: inline-block; padding: 3px 9px; border-radius: 99px; font-size: 11.5px; font-weight: 600;
+  background: var(--tarjeta); border: 1px solid var(--linea); color: var(--suave);
+}
+.chip.vivo { color: #c8f0d6; border-color: #2f6b47; background: #17301f; }
+.chip.aviso { color: var(--sol-claro); border-color: var(--sol-osc); background: #2c2210; }
+
+.contenedor { max-width: 1180px; margin: 0 auto; padding: 22px; }
+
+select, input {
+  background: var(--tarjeta); color: var(--texto); border: 1px solid var(--linea);
+  border-radius: 7px; padding: 7px 10px; font-size: 13px;
+}

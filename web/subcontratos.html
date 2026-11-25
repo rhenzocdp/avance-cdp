@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programa por subcontrato · Newen Antu</title>
+<link rel="stylesheet" href="estilo.css">
+<style>
+  .aviso { background: #2c2210; border: 1px solid var(--sol-osc); color: var(--sol-claro); padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 14px; }
+  .aviso.error { background: #2d1515; border-color: #7a2a26; color: #f3b5b1; }
+  .resumen { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .resumen button { cursor: pointer; }
+  .resumen button.activo { border-color: var(--sol); color: var(--sol); }
+
+  .papel { background: #fff; color: #1e293b; border-radius: 6px; padding: 22px 26px; box-shadow: 0 10px 40px rgba(0,0,0,.45); font-size: 11px; margin-bottom: 26px; }
+  .papel .hdr { display: grid; grid-template-columns: 190px 1fr 230px; border: 1.5px solid #0B2B5C; border-radius: 6px; overflow: hidden; }
+  .papel .hdr > div { padding: 8px 12px; display: flex; flex-direction: column; justify-content: center; }
+  .papel .logo { border-right: 1px solid #cbd5e1; align-items: center; }
+  .papel .logo img { width: 160px; }
+  .papel .ttl { text-align: center; }
+  .papel .ttl h1 { font-size: 16px; color: #0B2B5C; letter-spacing: .4px; text-transform: uppercase; }
+  .papel .ttl h2 { font-size: 14px; color: #C00000; font-weight: 700; margin-top: 3px; }
+  .papel .ttl h3 { font-size: 11px; color: #475569; font-weight: 500; margin-top: 1px; }
+  .papel .meta { border-left: 1px solid #cbd5e1; background: #f1f5f9; line-height: 1.7; }
+  .papel .meta b { color: #0B2B5C; }
+  .papel .strip { display: flex; margin: 8px 0 10px; border-radius: 5px; overflow: hidden; font-size: 10.5px; }
+  .papel .strip div { flex: 1; padding: 6px 12px; background: #0B2B5C; color: #e2e8f0; }
+  .papel .strip div + div { border-left: 1px solid #1e4d92; }
+  .papel .strip b { color: #fff; }
+  .papel .strip .acc { background: #C00000; }
+  .papel table { width: 100%; border-collapse: collapse; }
+  .papel thead { display: table-header-group; }
+  .papel th { background: #0B2B5C; color: #fff; font-size: 9.5px; text-transform: uppercase; letter-spacing: .4px; padding: 6px 7px; text-align: left; border: 1px solid #0B2B5C; }
+  .papel td { padding: 4px 7px; border: 1px solid #d6dee8; vertical-align: middle; }
+  .papel tr { page-break-inside: avoid; }
+  .papel td.c, .papel th.c { text-align: center; }
+  .papel td.p { font-weight: 600; color: #0f172a; }
+  .papel tr.grp td { background: #e8eef7; color: #0B2B5C; font-weight: 700; font-size: 10.5px; border-left: 4px solid #C00000; padding: 4px 8px; }
+  .papel tr.grp td span { font-weight: 400; color: #64748b; }
+  .papel .est { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 9.5px; font-weight: 700; white-space: nowrap; }
+  .papel .est.comp { background: #fde7c2; color: #8a4b00; }
+  .papel .est.atr { background: #fbd5d3; color: #9b1c15; }
+  .papel .est.prog { background: #eef2f7; color: #475569; }
+  .papel .box { display: inline-block; width: 9px; height: 9px; border: 1px solid #475569; vertical-align: -1px; }
+  .papel .sign { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 34px; text-align: center; font-size: 10.5px; color: #334155; page-break-inside: avoid; }
+  .papel .sign div { border-top: 1px solid #475569; padding-top: 5px; }
+  .papel .foot { margin-top: 12px; display: flex; justify-content: space-between; font-size: 9px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 4px; }
+  .papel .nota { font-size: 9.5px; color: #64748b; margin-top: 6px; }
+
+  @page { size: A4 portrait; margin: 9mm 9mm; }
+  @media print {
+    body { background: #fff; }
+    .barra, .resumen, .aviso, .no-print { display: none !important; }
+    .contenedor { padding: 0; max-width: none; }
+    .papel { box-shadow: none; padding: 0; border-radius: 0; margin: 0; page-break-after: always; font-size: 9.5px; }
+    .papel td { padding: 1.2px 5px; }
+    .papel .nota { margin-top: 3px; font-size: 8.5px; }
+    .papel .ttl h1 { font-size: 13px; }
+    .papel .hdr > div { padding: 5px 9px; }
+    .papel .sign { margin-top: 10px; }
+    .papel .foot { margin-top: 4px; padding-top: 2px; }
+    .papel .strip { margin: 5px 0 6px; }
+    .papel th { padding: 5px 5px; font-size: 8.5px; }
+    .papel .hdr { grid-template-columns: 150px 1fr 180px; }
+    .papel .logo img { width: 125px; }
+    .papel .strip { font-size: 9px; }
+    .papel .strip div { padding: 5px 8px; }
+    .papel .sign { margin-top: 22px; }
+    .papel:last-child { page-break-after: auto; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<header class="barra">
+  <a class="marca" href="index.html"><div class="sol"></div><div><b>Newen Antu · Tablero de Obra</b><small>Programa por subcontrato</small></div></a>
+  <div class="acciones">
+    <span class="chip" id="origen">Cargando…</span>
+    <select id="filtroSem" title="Semana" onchange="pintar()"></select>
+    <a class="btn" href="plan.html">🗓️ PAC semana</a>
+    <button class="btn sol-btn" onclick="window.print()">🖨 Imprimir / PDF</button>
+  </div>
+</header>
+
+<main class="contenedor">
+  <div id="mensajes"></div>
+  <div class="resumen" id="filtro"></div>
+  <div id="hojas"></div>
+</main>
+
+<script src="datos.js"></script>
+<script>
+let D = null, filtro = '';
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const aFecha = s => { const [d, m, a] = s.split('-').map(Number); return new Date(a, m - 1, d); };
+const corto = d => ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2);
+
+NA.cargar().then(({ datos, origen }) => {
+  D = datos;
+  $('origen').textContent = origen;
+  $('origen').className = 'chip ' + (origen.startsWith('En línea') ? 'vivo' : 'aviso');
+  if (!D.programa) {
+    $('mensajes').innerHTML = '<div class="aviso error">El script de la planilla es una versión anterior: falta actualizar Codigo.gs (Implementar → Nueva versión).</div>';
+    return;
+  }
+  pintar();
+}).catch(e => { $('mensajes').innerHTML = `<div class="aviso error">No pude leer la planilla: ${esc(e.message)}</div>`; });
+
+function pintar() {
+  const subs = D.config.subcontratos || {};
+  const siglas = [...new Set(D.programa.map(p => p.resp).filter(Boolean))]
+    .sort((a, b) => Object.keys(subs).indexOf(a) - Object.keys(subs).indexOf(b));
+  $('filtro').innerHTML = ['', ...siglas].map(s =>
+    `<button class="btn ${s === filtro ? 'activo' : ''}" onclick="filtro='${s}';pintar()">${s ? esc((subs[s] || {}).nombre || s) : 'Todos'}</button>`).join('');
+
+  const ini = aFecha(D.semana.inicio);
+  const nSem = D.config.semanasVentana;
+  const ultimo = Math.max(...D.programa.map(p => p.t || 0));
+  const finVentana = nSem ? new Date(ini.getTime() + (nSem * 7 - 1) * 864e5) : new Date(ultimo);
+  const semanaDe = p => p.t ? Math.max(0, Math.floor((p.t - ini.getTime()) / (7 * 864e5))) : 0;
+  const rango = k => { const a = new Date(ini.getTime() + k * 7 * 864e5), b = new Date(a.getTime() + 6 * 864e5); return `${corto(a)} → ${corto(b)}`; };
+  // Selector de semana (por defecto: semana 0, la que se planifica)
+  const maxSem = Math.max(0, ...D.programa.map(semanaDe));
+  const sel = $('filtroSem');
+  const prev = sel.dataset.listo ? sel.value : '0';
+  sel.innerHTML = `<option value="todas">Todas las semanas</option>` +
+    Array.from({ length: maxSem + 1 }, (_, k) => `<option value="${k}">Semana ${k} · ${rango(k)}${k === 0 ? ' (actual)' : ''}</option>`).join('');
+  sel.value = prev; sel.dataset.listo = '1';
+  const semSel = sel.value === 'todas' ? null : +sel.value;
+  const enSemana = p => semSel === null || semanaDe(p) === semSel;
+  const firmas = ['Jefe de Terreno Obra Gruesa', 'Supervisor ' + (D.config.supervisor || ''), 'Subcontrato (recibe conforme)'];
+
+  $('hojas').innerHTML = siglas.filter(s => !filtro || s === filtro).map(sigla => {
+    const sub = subs[sigla] || { nombre: sigla, especialidad: '' };
+    const filas = D.programa.filter(p => p.resp === sigla && enSemana(p));
+    if (!filas.length) return '';
+    const comp = filas.filter(p => p.estado === 'programado').length;
+    const atr = filas.filter(p => p.estado !== 'programado' && p.t && p.t < ini.getTime() + 7 * 864e5).length;
+    let cuerpo = '', semActual = -1, n = 0;
+    filas.forEach(p => {
+      const k = semanaDe(p);
+      if (k !== semActual) {
+        semActual = k;
+        const cant = filas.filter(x => semanaDe(x) === k).length;
+        cuerpo += `<tr class="grp"><td colspan="8">Semana ${k} · ${rango(k)} ${k === 0 ? '(en curso)' : ''} <span>· ${cant} actividad${cant > 1 ? 'es' : ''}</span></td></tr>`;
+      }
+      let est;
+      if (p.estado === 'programado') est = '<span class="est comp">Comprometida</span>';
+      else if (p.t && p.t < ini.getTime() + 7 * 864e5) est = '<span class="est atr">Sin compromiso</span>';
+      else est = '<span class="est prog">Por programa</span>';
+      cuerpo += `<tr><td class="c">${++n}</td><td class="c">${esc(p.fecha)}</td><td class="c"><b>${esc(p.torre)}</b></td><td>${esc(p.frente)}</td>
+        <td>${esc(p.unidad)}</td><td class="p">${esc(p.partida)}</td><td class="c">${est}</td>
+        <td class="c"><span class="box"></span> Sí &nbsp; <span class="box"></span> No</td></tr>`;
+    });
+    return `<div class="papel">
+      <div class="hdr">
+        <div class="logo"><img src="logo_don_pedro.png" alt="Constructora Don Pedro"></div>
+        <div class="ttl"><h1>${semSel === null ? 'Programa por subcontrato' : 'Programa semanal por subcontrato'}</h1><h2>${esc(sub.nombre)}</h2><h3>${esc(sub.especialidad)}</h3></div>
+        <div class="meta"><div><b>Obra:</b> ${esc(D.obra)}</div><div><b>Período:</b> ${semSel === null ? `${corto(ini)} al ${corto(finVentana)}/${finVentana.getFullYear()}` : `Semana ${semSel} · ${rango(semSel)}`}</div><div><b>Emitido:</b> semana ${D.semana.inicio.slice(0, 5)} al ${D.semana.fin}</div></div>
+      </div>
+      <div class="strip"><div><b>Supervisor:</b> ${esc(D.config.supervisor || '')}</div><div><b>Plan de ataque:</b> ${esc(D.config.ataque.join(' → '))}</div>
+        <div><b>Comprometidas (pizarra):</b> ${comp}${atr ? ` · ${atr} sin compromiso` : ''}</div><div class="acc"><b>Actividades ${semSel === null ? 'en el período' : 'de la semana'}: ${filas.length}</b></div></div>
+      <table><thead><tr><th class="c">#</th><th class="c">Fecha programa</th><th class="c">Torre</th><th>Frente / Nivel</th><th>Unidad de control</th>
+        <th>Actividad</th><th class="c">Estado</th><th class="c">Cumple</th></tr></thead><tbody>${cuerpo}</tbody></table>
+      <p class="nota">Fecha programa = término según Programa OG ajustado. "Comprometida" = acordada en la reunión del jueves (pizarra). "Sin compromiso" = el programa la pide esta semana y no se comprometió.</p>
+      <div class="sign">${firmas.map(f => `<div>${esc(f)}</div>`).join('')}</div>
+      <div class="foot"><span>Constructora Don Pedro · Oficina Técnica · Planificación de Obra</span><span>Fuente: Programa OG + Pizarra Newen Antu · generado ${esc(D.generado)}</span></div>
+    </div>`;
+  }).join('') || '<div class="aviso">No hay actividades de subcontratos en el período.</div>';
+}
+</script>
+</body>
+</html>

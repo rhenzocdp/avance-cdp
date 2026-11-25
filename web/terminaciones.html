@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terminaciones · Newen Antu · Tablero de Obra</title>
+  <style>
+    :root {
+      --bg-dark: #121416;
+      --bg-panel: #0a1426;
+      --primary-blue: #2A2F36;
+      --accent-red: #F5A524;
+      --text-main: #f0f4f8;
+      --text-muted: #94a3b8;
+      --border-color: #30353C;
+      --sem-red: #F8696B;
+      --sem-yellow: #FFEB84;
+      --sem-green: #63BE7B;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* HEADER PREMIUM */
+    header {
+      background: linear-gradient(90deg, var(--primary-blue) 0%, #1A1D21 70%, var(--accent-red) 100%);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--accent-red);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      z-index: 20;
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-portal {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-portal:hover {
+      background: var(--accent-red);
+      border-color: #FCD385;
+      transform: translateY(-1px);
+    }
+
+    .project-titles h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .project-titles p {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+    }
+
+    .global-kpis {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .kpi-card {
+      background: rgba(18, 20, 22, 0.65);
+      border: 1px solid var(--border-color);
+      padding: 6px 14px;
+      border-radius: 8px;
+      text-align: center;
+      min-width: 125px;
+    }
+
+    .kpi-card .label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      display: block;
+    }
+
+    .kpi-card .val {
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+
+    /* BARRA DE HERRAMIENTAS LPS Y NAVEGACIÓN */
+    .lps-toolbar {
+      background-color: var(--bg-panel);
+      border-bottom: 1px solid var(--border-color);
+      padding: 10px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      z-index: 15;
+    }
+
+    .nav-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .group-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .pill-selector {
+      display: flex;
+      background: #0D0F11;
+      padding: 3px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+    }
+
+    .pill-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+
+    .pill-btn:hover {
+      color: #fff;
+    }
+
+    .pill-btn.active {
+      background: var(--primary-blue);
+      color: #fff;
+      box-shadow: 0 0 10px rgba(42, 47, 54, 0.8);
+    }
+
+    .pill-btn.active-red {
+      background: var(--accent-red);
+      color: #fff;
+    }
+
+    /* PROGRAMACIÓN RÁPIDA */
+    .fast-pac-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(42, 47, 54, 0.35);
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--primary-blue);
+    }
+
+    .fast-pac-bar.active-mode {
+      border-color: var(--accent-red);
+      background: rgba(245, 165, 36, 0.18);
+      box-shadow: 0 0 12px rgba(245, 165, 36, 0.35);
+    }
+
+    .toggle-fast-btn {
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid #475569;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+
+    .toggle-fast-btn.on {
+      background: var(--accent-red);
+      border-color: #F5A524;
+    }
+
+    select.lps-select {
+      background: #0D0F11;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 6px 10px;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      outline: none;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-action {
+      background: var(--primary-blue);
+      color: #fff;
+      border: 1px solid #1e4b94;
+      padding: 7px 13px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-action:hover {
+      background: #133e82;
+    }
+
+    .btn-action.danger {
+      background: rgba(245, 165, 36, 0.25);
+      border-color: var(--accent-red);
+    }
+
+    .btn-action.danger:hover {
+      background: var(--accent-red);
+    }
+
+    /* LAYOUT CENTRAL */
+    .workspace {
+      display: grid;
+      grid-template-columns: 310px 1fr 340px;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border-color);
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .sidebar-right {
+      background: var(--bg-panel);
+      border-left: 1px solid var(--border-color);
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .panel-box {
+      background: rgba(13, 15, 17, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .panel-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* MATRIZ DE NAVEGACIÓN RÁPIDA DE TORRE */
+    .tower-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      margin-top: 6px;
+    }
+
+    .mini-cell {
+      padding: 6px 2px;
+      text-align: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      border-radius: 4px;
+      cursor: pointer;
+      color: #000;
+      border: 1px solid rgba(0,0,0,0.3);
+      transition: transform 0.1s;
+    }
+
+    .mini-cell:hover {
+      transform: scale(1.06);
+      outline: 1px solid #fff;
+    }
+
+    /* VISOR SVG CENTRAL */
+    .canvas-container {
+      position: relative;
+      background: radial-gradient(circle at center, #0d1b33 0%, #050911 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    .floor-banner {
+      position: absolute;
+      top: 16px;
+      left: 20px;
+      background: rgba(10, 20, 38, 0.85);
+      border-left: 4px solid var(--accent-red);
+      padding: 8px 16px;
+      border-radius: 4px;
+      border-top: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+      pointer-events: none;
+    }
+
+    .floor-banner h2 {
+      font-size: 1.05rem;
+      color: #fff;
+    }
+
+    .floor-banner span {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .legend-bar {
+      position: absolute;
+      bottom: 16px;
+      background: rgba(10, 20, 38, 0.9);
+      border: 1px solid var(--border-color);
+      padding: 8px 18px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 0.78rem;
+    }
+
+    .gradient-ramp {
+      width: 180px;
+      height: 12px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, var(--sem-red) 0%, var(--sem-yellow) 50%, var(--sem-green) 100%);
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    svg#dxf-svg {
+      width: 100%;
+      height: 100%;
+      max-width: 1100px;
+      max-height: 760px;
+      filter: drop-shadow(0 12px 25px rgba(0,0,0,0.7));
+    }
+
+    .unit-poly {
+      stroke: #2A2F36;
+      stroke-width: 6;
+      cursor: pointer;
+      transition: filter 0.2s, stroke-width 0.2s, stroke 0.2s;
+      fill-opacity: 0.86;
+    }
+
+    .unit-poly:hover {
+      filter: brightness(1.15);
+      stroke: #ffffff;
+      stroke-width: 10;
+      fill-opacity: 0.95;
+    }
+
+    .unit-poly.pac-scheduled {
+      stroke: var(--accent-red);
+      stroke-width: 12;
+      stroke-dasharray: 28 12;
+    }
+
+    .cota-line {
+      stroke: rgba(148, 163, 184, 0.35);
+      stroke-width: 2;
+      stroke-dasharray: 6 6;
+      pointer-events: none;
+    }
+
+    .cota-text {
+      fill: #94a3b8;
+      font-size: 26px;
+      font-weight: 600;
+      text-anchor: middle;
+      pointer-events: none;
+    }
+
+    .poly-label-title {
+      font-size: 38px;
+      font-weight: 800;
+      fill: #121416;
+      text-anchor: middle;
+      pointer-events: none;
+      paint-order: stroke;
+      stroke: rgba(255, 255, 255, 0.75);
+      stroke-width: 6px;
+    }
+
+    .poly-label-pct {
+      font-size: 46px;
+      font-weight: 900;
+      fill: #121416;
+      text-anchor: middle;
+      pointer-events: none;
+      paint-order: stroke;
+      stroke: rgba(255, 255, 255, 0.85);
+      stroke-width: 7px;
+    }
+
+    .poly-label-pac {
+      font-size: 25px;
+      font-weight: 800;
+      fill: #ffffff;
+      text-anchor: middle;
+      pointer-events: none;
+      paint-order: stroke;
+      stroke: #F5A524;
+      stroke-width: 8px;
+    }
+
+    /* LISTADO DE PARTIDAS LATERAL */
+    .partidas-summary-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .partida-mini-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.76rem;
+      padding: 5px 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 4px;
+      border-left: 3px solid var(--primary-blue);
+    }
+
+    .pac-badge {
+      background: var(--accent-red);
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    /* MODAL DE EDICIÓN SCROLLABLE */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(13, 15, 17, 0.82);
+      backdrop-filter: blur(4px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      padding: 20px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-panel);
+      border: 2px solid var(--primary-blue);
+      border-top: 4px solid var(--accent-red);
+      width: 100%;
+      max-width: 860px;
+      max-height: 88vh;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+    }
+
+    .modal-header {
+      padding: 16px 22px;
+      background: linear-gradient(90deg, var(--primary-blue), #06152d);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .modal-header h3 {
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-subheader {
+      padding: 10px 22px;
+      background: #121416;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.82rem;
+    }
+
+    .modal-body {
+      padding: 16px 22px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .task-row {
+      display: grid;
+      grid-template-columns: 2.2fr 1.8fr 1.1fr 1.3fr;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(48, 53, 60, 0.6);
+      padding: 10px 12px;
+      border-radius: 6px;
+    }
+
+    .task-row.scheduled {
+      border-color: var(--accent-red);
+      background: rgba(245, 165, 36, 0.12);
+    }
+
+    .task-info {
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+
+    .task-weight {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-left: 4px;
+    }
+
+    .slider-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .slider-wrap input[type="range"] {
+      flex: 1;
+      accent-color: var(--primary-blue);
+      cursor: pointer;
+    }
+
+    .slider-val {
+      font-size: 0.82rem;
+      font-weight: 800;
+      min-width: 44px;
+      text-align: right;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #000;
+    }
+
+    .pac-check-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .pac-check-label input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent-red);
+      cursor: pointer;
+    }
+
+    .modal-footer {
+      padding: 12px 22px;
+      background: #121416;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0D0F11;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary-blue);
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER PRINCIPAL -->
+  <header>
+    <div class="brand-box">
+      <a href="index.html" class="btn-portal">☀ Tablero de Obra</a>
+      <div class="project-titles">
+        <h1>Proyecto Newen Antu (80 Deptos)</h1>
+        <p>Módulo: Control de Terminaciones | Tablero de Obra v7</p>
+      </div>
+    </div>
+
+    <div class="global-kpis">
+      <div class="kpi-card">
+        <span class="label">Avance Global Proyecto</span>
+        <span class="val" id="kpi-global-pct" style="color: var(--sem-red);">0.0%</span>
+      </div>
+      <div class="kpi-card">
+        <span class="label">Torre Activa (<span id="kpi-tower-name">T5</span>)</span>
+        <span class="val" id="kpi-tower-pct">0.0%</span>
+      </div>
+      <div class="kpi-card">
+        <span class="label">Partidas PAC Semana</span>
+        <span class="val" id="kpi-pac-count" style="color: #F5A524;">0</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- BARRA DE CONTROL Y PLANIFICACIÓN RÁPIDA -->
+  <div class="lps-toolbar">
+    <!-- Secuencia de Torres T5 -> T1 -> T3 -> T2 -> T4 -->
+    <div class="nav-group">
+      <span class="group-label">Secuencia Torres:</span>
+      <div class="pill-selector" id="tower-selector">
+        <button class="pill-btn active" data-tower="T5">T5</button>
+        <button class="pill-btn" data-tower="T1">T1</button>
+        <button class="pill-btn" data-tower="T3">T3</button>
+        <button class="pill-btn" data-tower="T2">T2</button>
+        <button class="pill-btn" data-tower="T4">T4</button>
+      </div>
+
+      <span class="group-label" style="margin-left:8px;">Nivel:</span>
+      <div class="pill-selector" id="floor-selector">
+        <button class="pill-btn active" data-floor="1">Piso 1</button>
+        <button class="pill-btn" data-floor="2">Piso 2</button>
+        <button class="pill-btn" data-floor="3">Piso 3</button>
+        <button class="pill-btn" data-floor="4">Piso 4</button>
+      </div>
+    </div>
+
+    <!-- Modo Programación Rápida -->
+    <div class="fast-pac-bar" id="fast-pac-container">
+      <button class="toggle-fast-btn" id="btn-toggle-fast" onclick="toggleFastMode()">
+        ⚡ Modo Prog. Rápida: OFF
+      </button>
+      <select id="fast-partida-select" class="lps-select" title="Seleccionar Partida Global">
+        <optgroup label="Listado A — Departamentos (D1-D4)" id="opt-group-depto"></optgroup>
+        <optgroup label="Listado B — Área Común (COMUN)" id="opt-group-comun"></optgroup>
+      </select>
+      <select id="fast-supervisor-select" class="lps-select" title="Seleccionar Supervisor Global">
+        <option value="Supervisor 1">Supervisor 1</option>
+        <option value="Supervisor 2">Supervisor 2</option>
+        <option value="Supervisor 3">Supervisor 3</option>
+        <option value="Supervisor 4">Supervisor 4</option>
+        <option value="Supervisor 5">Supervisor 5</option>
+        <option value="SC 1">SC 1</option>
+        <option value="SC 2">SC 2</option>
+        <option value="SC 3">SC 3</option>
+      </select>
+    </div>
+
+    <!-- Botones de Exportación y Limpieza -->
+    <div class="action-buttons">
+      <button class="btn-action" onclick="exportPACSemanal()">📥 Exportar PAC Semanal</button>
+      <button class="btn-action danger" onclick="clearCurrentPlanning()">🧹 Limpiar Planificación Actual</button>
+    </div>
+  </div>
+
+  <!-- WORKSPACE PRINCIPAL -->
+  <div class="workspace">
+    <!-- PANEL IZQUIERDO: RESUMEN POR TORRE Y MATRIZ -->
+    <aside class="sidebar">
+      <div class="panel-box">
+        <div class="panel-title">
+          <span>Flujo LPS — 5 Torres</span>
+          <span style="font-size:0.7rem; color:var(--text-muted);">T5 → T1 → T2 → T4 → T3</span>
+        </div>
+        <div id="towers-summary-bars"></div>
+      </div>
+
+      <div class="panel-box">
+        <div class="panel-title">
+          <span>Matriz de Planta (<span id="matrix-tower-lbl">T5</span>)</span>
+          <span style="font-size:0.7rem; color:var(--text-muted);">4 Niveles</span>
+        </div>
+        <div class="tower-grid" style="margin-bottom:4px; color:var(--text-muted); font-size:0.68rem; text-align:center;">
+          <div>D1</div><div>D2</div><div>D3</div><div>D4</div><div>COM</div>
+        </div>
+        <div id="tower-mini-matrix"></div>
+      </div>
+
+      <div class="panel-box">
+        <div class="panel-title">
+          <span>Geometría DXF Extraída</span>
+          <span style="color:#63BE7B;">AC1032</span>
+        </div>
+        <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.45;">
+          • <strong>D1 (Inf. Der.):</strong> Polígono 19 vértices<br/>
+          • <strong>D2 (Inf. Izq.):</strong> Polígono 19 vértices<br/>
+          • <strong>D3 (Sup. Der.):</strong> Polígono 19 vértices<br/>
+          • <strong>D4 (Sup. Izq.):</strong> Polígono 19 vértices<br/>
+          • <strong>COMUN (Central):</strong> 26,50 m² + Shaft (130x364)
+        </p>
+      </div>
+    </aside>
+
+    <!-- PLANO SVG CENTRAL (GEOMETRÍA EXACTA DXF) -->
+    <main class="canvas-container">
+      <div class="floor-banner">
+        <h2 id="banner-title">TORRE T5 — PISO 1</h2>
+        <span id="banner-subtitle">Haz clic en un polígono para editar partidas o usa el Modo Rápido</span>
+      </div>
+
+      <!-- ViewBox ajustado exactamente a las coordenadas del DXF: X[600..3210], Y invertido para coincidir con CAD -->
+      <svg id="dxf-svg" viewBox="560 -3850 2690 1470" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <pattern id="hatch-shaft" width="20" height="20" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+            <line x1="0" y1="0" x2="0" y2="20" stroke="#2A2F36" stroke-width="4" />
+          </pattern>
+        </defs>
+
+        <!-- Grupo con inversión de eje Y para respetar coordenadas cartesianas nativas de AutoCAD -->
+        <g transform="scale(1, -1)">
+          <!-- Líneas de cotas principales extraídas del DXF -->
+          <line x1="685.07" y1="3755" x2="1677.57" y2="3755" class="cota-line" />
+          <line x1="1767.57" y1="3755" x2="2042.57" y2="3755" class="cota-line" />
+          <line x1="2132.57" y1="3755" x2="3125.07" y2="3755" class="cota-line" />
+          <line x1="635" y1="2817.79" x2="635" y2="3401.79" class="cota-line" />
+
+          <!-- POLÍGONO D4 (SUPERIOR IZQUIERDO - Handle 4C3) -->
+          <polygon id="poly-D4" class="unit-poly" onclick="handlePolygonClick('D4')"
+            points="1677.57,3109.79 685.07,3109.79 685.07,3401.79 791.07,3401.79 791.07,3687.79 1418.07,3687.79 1418.07,3679.79 1598.07,3679.79 1598.07,3729.79 1767.57,3729.79 1767.57,3227.29 1677.57,3227.29" />
+
+          <!-- POLÍGONO D2 (INFERIOR IZQUIERDO - Handle 4C4) -->
+          <polygon id="poly-D2" class="unit-poly" onclick="handlePolygonClick('D2')"
+            points="1677.57,3109.79 685.07,3109.79 685.07,2817.79 791.07,2817.79 791.07,2531.79 1418.07,2531.79 1418.07,2539.79 1598.07,2539.79 1598.07,2489.79 1775.07,2489.79 1775.07,2682.79 1783.07,2682.79 1783.08,2747.79 1767.57,2747.79 1767.57,2992.29 1677.57,2992.29" />
+
+          <!-- POLÍGONO D3 (SUPERIOR DERECHO - Handle 4C5) -->
+          <polygon id="poly-D3" class="unit-poly" onclick="handlePolygonClick('D3')"
+            points="2132.57,3109.79 3125.07,3109.79 3125.07,3401.79 3019.07,3401.79 3019.07,3687.79 2387.07,3687.79 2387.07,3679.79 2212.07,3679.79 2212.07,3729.79 2042.57,3729.79 2042.57,3227.29 2132.57,3227.29" />
+
+          <!-- POLÍGONO D1 (INFERIOR DERECHO - Handle 4C6) -->
+          <polygon id="poly-D1" class="unit-poly" onclick="handlePolygonClick('D1')"
+            points="2132.57,3109.79 3125.07,3109.79 3125.07,2817.79 3019.07,2817.79 3019.07,2531.79 2387.07,2531.79 2387.07,2539.79 2212.07,2539.79 2212.07,2489.79 2035.07,2489.79 2035.07,2682.79 2027.07,2682.79 2027.07,2747.79 2042.57,2747.79 2042.57,2992.29 2132.57,2992.29" />
+
+          <!-- POLÍGONO ÁREA COMÚN (CENTRAL - Handle 489 / 4C7) -->
+          <polygon id="poly-COMUN" class="unit-poly" onclick="handlePolygonClick('COMUN')"
+            points="1767.57,3729.79 2042.57,3729.79 2042.57,3227.29 2132.57,3227.29 2132.57,2992.29 2042.57,2992.29 2042.57,2747.79 1767.57,2747.79 1767.57,2992.29 1677.57,2992.29 1677.57,3227.29 1767.57,3227.29" />
+
+          <!-- SHAFT / CAJA ESCALERA INTERIOR (Handle 48E y 48B) -->
+          <polygon points="1775.07,3229.79 1905.07,3229.79 1905.07,3593.79 1775.07,3593.79"
+            fill="url(#hatch-shaft)" stroke="#2A2F36" stroke-width="4" pointer-events="none" />
+          <line x1="1775.07" y1="3229.79" x2="1905.07" y2="3593.79" stroke="#2A2F36" stroke-width="3" pointer-events="none" />
+          <line x1="1775.07" y1="3593.79" x2="1905.07" y2="3229.79" stroke="#2A2F36" stroke-width="3" pointer-events="none" />
+        </g>
+
+        <!-- Textos de Cotas CAD y Etiquetas Dinámicas sobre los polígonos -->
+        <text x="1181" y="-3770" class="cota-text">992.5 cm</text>
+        <text x="1905" y="-3770" class="cota-text">275.0 cm</text>
+        <text x="2628" y="-3770" class="cota-text">992.5 cm</text>
+        <text x="615" y="-3255" class="cota-text" transform="rotate(-90 615 -3255)">292 cm</text>
+        <text x="615" y="-2963" class="cota-text" transform="rotate(-90 615 -2963)">292 cm</text>
+
+        <!-- Etiquetas Departamento 4 -->
+        <text x="1220" y="-3420" class="poly-label-title">DEPARTAMENTO 4</text>
+        <text x="1220" y="-3355" id="lbl-pct-D4" class="poly-label-pct">0%</text>
+        <text x="1220" y="-3295" id="lbl-pac-D4" class="poly-label-pac"></text>
+
+        <!-- Etiquetas Departamento 2 -->
+        <text x="1220" y="-2860" class="poly-label-title">DEPARTAMENTO 2</text>
+        <text x="1220" y="-2795" id="lbl-pct-D2" class="poly-label-pct">0%</text>
+        <text x="1220" y="-2735" id="lbl-pac-D2" class="poly-label-pac"></text>
+
+        <!-- Etiquetas Departamento 3 -->
+        <text x="2590" y="-3420" class="poly-label-title">DEPARTAMENTO 3</text>
+        <text x="2590" y="-3355" id="lbl-pct-D3" class="poly-label-pct">0%</text>
+        <text x="2590" y="-3295" id="lbl-pac-D3" class="poly-label-pac"></text>
+
+        <!-- Etiquetas Departamento 1 -->
+        <text x="2590" y="-2860" class="poly-label-title">DEPARTAMENTO 1</text>
+        <text x="2590" y="-2795" id="lbl-pct-D1" class="poly-label-pct">0%</text>
+        <text x="2590" y="-2735" id="lbl-pac-D1" class="poly-label-pac"></text>
+
+        <!-- Etiquetas Área Común -->
+        <text x="1905" y="-3115" class="poly-label-title" style="font-size:30px;">ÁREA COMÚN</text>
+        <text x="1905" y="-3075" class="cota-text" style="fill:#121416; font-weight:800; font-size:22px;">26,50 m²</text>
+        <text x="1905" y="-3015" id="lbl-pct-COMUN" class="poly-label-pct" style="font-size:40px;">0%</text>
+        <text x="1905" y="-2960" id="lbl-pac-COMUN" class="poly-label-pac"></text>
+      </svg>
+
+      <!-- Leyenda Semáforo Continuo -->
+      <div class="legend-bar">
+        <span>Semáforo Continuo LPS:</span>
+        <strong style="color:var(--sem-red);">0% (#F8696B)</strong>
+        <div class="gradient-ramp"></div>
+        <strong style="color:var(--sem-yellow);">50% (#FFEB84)</strong>
+        <span>→</span>
+        <strong style="color:var(--sem-green);">100% (#63BE7B)</strong>
+      </div>
+    </main>
+
+    <!-- PANEL DERECHO: RESUMEN DEL PISO Y COMPROMISOS PAC -->
+    <aside class="sidebar-right">
+      <div class="panel-box">
+        <div class="panel-title">
+          <span>Unidades del Nivel Activo</span>
+          <span id="right-level-tag" style="color:var(--sem-yellow);">T5 - P1</span>
+        </div>
+        <div id="level-units-cards" class="partidas-summary-list"></div>
+      </div>
+
+      <div class="panel-box" style="flex:1; display:flex; flex-direction:column;">
+        <div class="panel-title">
+          <span>Compromisos PAC Semanal</span>
+          <span class="pac-badge" id="pac-sidebar-counter">0 Prog.</span>
+        </div>
+        <div id="pac-active-list" class="partidas-summary-list" style="overflow-y:auto; max-height:420px;"></div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- MODAL DE EDICIÓN POR POLÍGONO (SCROLLABLE) -->
+  <div class="modal-backdrop" id="edit-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>
+          <span id="modal-unit-title">TORRE T5 - PISO 1 - D1</span>
+          <span class="pac-badge" id="modal-unit-pct" style="font-size:0.95rem; padding:4px 10px;">0.0%</span>
+        </h3>
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+
+      <div class="modal-subheader">
+        <div>
+          Asignar Supervisor Masivo:
+          <select id="modal-bulk-sup" class="lps-select" onchange="applyBulkSupervisor(this.value)">
+            <option value="">-- Seleccionar --</option>
+            <option value="Supervisor 1">Supervisor 1</option>
+            <option value="Supervisor 2">Supervisor 2</option>
+            <option value="Supervisor 3">Supervisor 3</option>
+            <option value="Supervisor 4">Supervisor 4</option>
+            <option value="Supervisor 5">Supervisor 5</option>
+            <option value="SC 1">SC 1</option>
+            <option value="SC 2">SC 2</option>
+            <option value="SC 3">SC 3</option>
+          </select>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-action" onclick="setAllUnitProgress(100)">Marcar Todo 100%</button>
+          <button class="btn-action danger" onclick="setAllUnitProgress(0)">Reiniciar 0%</button>
+        </div>
+      </div>
+
+      <div class="modal-body" id="modal-tasks-container"></div>
+
+      <div class="modal-footer">
+        <span style="font-size:0.78rem; color:var(--text-muted);">
+          Los cambios se guardan automáticamente en almacenamiento local (LPS Persistence).
+        </span>
+        <button class="btn-action" onclick="closeModal()">Cerrar y Actualizar Plano</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /*************************************************************************
+     * BLOQUE 1 — PARÁMETROS DEL MÓDULO Y LISTADOS A / B
+     *************************************************************************/
+    const TOWERS_ORDER = ['T5', 'T1', 'T2', 'T4', 'T3'];
+    const FLOORS = [1, 2, 3, 4];
+    const UNITS = ['D1', 'D2', 'D3', 'D4', 'COMUN'];
+    const SUPERVISORS = ['Ignacio Fuentes', 'Sin Asignar'];
+
+    // LISTADO A: 17 Partidas por Departamento (Suma = 100%)
+    const LISTADO_A = [
+      { id: 'A1',  name: '1) Revestimiento Zona Seca',    weight: 6 },
+      { id: 'A2',  name: '2) Revestimiento Zona Húmeda',  weight: 6 },
+      { id: 'A3',  name: '3) Enlucido Cielo y Afinado',   weight: 6 },
+      { id: 'A4',  name: '4) Empastado Muro Deptos',      weight: 6 },
+      { id: 'A5',  name: '5) Cerámica',                   weight: 6 },
+      { id: 'A6',  name: '6) Piso Flotante',              weight: 6 },
+      { id: 'A7',  name: '7) Puerta Acceso Depto',        weight: 6 },
+      { id: 'A8',  name: '8) Puerta Interiores',          weight: 6 },
+      { id: 'A9',  name: '9) Ventilación Pasiva',         weight: 5 },
+      { id: 'A10', name: '10) Cornisas',                  weight: 5 },
+      { id: 'A11', name: '11) Pilastra',                  weight: 5 },
+      { id: 'A12', name: '12) Guardapolvo',               weight: 5 },
+      { id: 'A13', name: '13) Endolado',                  weight: 5 },
+      { id: 'A14', name: '14) Sellos Hermeticidad',       weight: 5 },
+      { id: 'A15', name: '15) Látex',                     weight: 5 },
+      { id: 'A16', name: '16) Pintura Intumescente',      weight: 5 },
+      { id: 'A17', name: '17) Esmalte al Agua',           weight: 8 },
+      { id: 'A18', name: '18) Aseo y Limpieza Entrega',   weight: 4 }
+    ];
+
+    // LISTADO B: 4 Partidas por Área Común (Suma = 100%)
+    const LISTADO_B = [
+      { id: 'B1', name: '1) Empastado Áreas Comunes',              weight: 34 },
+      { id: 'B2', name: '2) Cerámica Áreas Comunes',               weight: 33 },
+      { id: 'B3', name: '3) Puertas Acceso Áreas Comunes',         weight: 33 }
+    ];
+
+    const STORAGE_KEY = 'NA_V7_TERMINACIONES';
+
+    let currentTower = 'T5';
+    let currentFloor = 1;
+    let activeModalUnit = null;
+    let fastModeActive = false;
+    let projectData = {};
+
+    /*************************************************************************
+     * INICIALIZACIÓN DE DATOS (5 TORRES x 4 NIVELES x 5 POLÍGONOS)
+     *************************************************************************/
+    function initData() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          projectData = JSON.parse(saved);
+          return;
+        } catch (e) {
+          console.error('Error leyendo storage, regenerando estructura...', e);
+        }
+      }
+
+      projectData = {};
+      TOWERS_ORDER.forEach(tower => {
+        projectData[tower] = {};
+        FLOORS.forEach(floor => {
+          projectData[tower][floor] = {};
+          UNITS.forEach(unit => {
+            const template = unit === 'COMUN' ? LISTADO_B : LISTADO_A;
+            const tasks = {};
+            template.forEach(item => {
+              tasks[item.id] = {
+                progress: 0,
+                pac: false,
+                supervisor: 'Ignacio Fuentes'
+              };
+            });
+            projectData[tower][floor][unit] = tasks;
+          });
+        });
+      });
+      saveData();
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(projectData));
+    }
+
+    /*************************************************************************
+     * REGLA DE ORO VISUAL: SEMÁFORO CONTINUO (0% #F8696B -> 50% #FFEB84 -> 100% #63BE7B)
+     *************************************************************************/
+    function getSemaphoreColor(pct) {
+      const p = Math.max(0, Math.min(100, Number(pct) || 0));
+      let r, g, b;
+      if (p <= 50) {
+        const t = p / 50;
+        r = Math.round(248 + (255 - 248) * t);
+        g = Math.round(105 + (235 - 105) * t);
+        b = Math.round(107 + (132 - 107) * t);
+      } else {
+        const t = (p - 50) / 50;
+        r = Math.round(255 + (99 - 255) * t);
+        g = Math.round(235 + (190 - 235) * t);
+        b = Math.round(132 + (123 - 132) * t);
+      }
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    /*************************************************************************
+     * CÁLCULO DE AVANCES PONDERADOS
+     *************************************************************************/
+    function getUnitProgress(tower, floor, unit) {
+      const unitTasks = projectData[tower][floor][unit];
+      const list = unit === 'COMUN' ? LISTADO_B : LISTADO_A;
+      let total = 0;
+      list.forEach(item => {
+        const st = unitTasks[item.id];
+        if (st) {
+          total += (st.progress * item.weight) / 100;
+        }
+      });
+      return total;
+    }
+
+    function getUnitPACCount(tower, floor, unit) {
+      const unitTasks = projectData[tower][floor][unit];
+      return Object.values(unitTasks).filter(t => t.pac).length;
+    }
+
+    function getTowerProgress(tower) {
+      let sum = 0;
+      let count = 0;
+      FLOORS.forEach(f => {
+        UNITS.forEach(u => {
+          sum += getUnitProgress(tower, f, u);
+          count++;
+        });
+      });
+      return count ? sum / count : 0;
+    }
+
+    function getGlobalProgress() {
+      let sum = 0;
+      TOWERS_ORDER.forEach(t => {
+        sum += getTowerProgress(t);
+      });
+      return sum / TOWERS_ORDER.length;
+    }
+
+    /*************************************************************************
+     * RENDERIZADO DE INTERFAZ Y PLANO SVG
+     *************************************************************************/
+    function populateFastModeSelect() {
+      const grpDepto = document.getElementById('opt-group-depto');
+      const grpComun = document.getElementById('opt-group-comun');
+      grpDepto.innerHTML = LISTADO_A.map(i => `<option value="${i.id}">${i.name} (${i.weight}%)</option>`).join('');
+      grpComun.innerHTML = LISTADO_B.map(i => `<option value="${i.id}">${i.name} (${i.weight}%)</option>`).join('');
+    }
+
+    function renderAll() {
+      // Banner central
+      document.getElementById('banner-title').textContent = `TORRE ${currentTower} — PISO ${currentFloor}`;
+      document.getElementById('right-level-tag').textContent = `${currentTower} - P${currentFloor}`;
+      document.getElementById('matrix-tower-lbl').textContent = currentTower;
+      document.getElementById('kpi-tower-name').textContent = currentTower;
+
+      // Actualizar polígonos del SVG
+      UNITS.forEach(unit => {
+        const pct = getUnitProgress(currentTower, currentFloor, unit);
+        const pacCount = getUnitPACCount(currentTower, currentFloor, unit);
+        const poly = document.getElementById(`poly-${unit}`);
+        const lblPct = document.getElementById(`lbl-pct-${unit}`);
+        const lblPac = document.getElementById(`lbl-pac-${unit}`);
+
+        if (poly) {
+          poly.style.fill = getSemaphoreColor(pct);
+          if (pacCount > 0) {
+            poly.classList.add('pac-scheduled');
+          } else {
+            poly.classList.remove('pac-scheduled');
+          }
+        }
+        if (lblPct) lblPct.textContent = `${pct.toFixed(1)}%`;
+        if (lblPac) lblPac.textContent = pacCount > 0 ? `🎯 PAC: ${pacCount}` : '';
+      });
+
+      // KPIs Globales
+      const globalPct = getGlobalProgress();
+      const towerPct = getTowerProgress(currentTower);
+      const elGlobal = document.getElementById('kpi-global-pct');
+      const elTower = document.getElementById('kpi-tower-pct');
+      elGlobal.textContent = `${globalPct.toFixed(1)}%`;
+      elGlobal.style.color = getSemaphoreColor(globalPct);
+      elTower.textContent = `${towerPct.toFixed(1)}%`;
+      elTower.style.color = getSemaphoreColor(towerPct);
+
+      renderLeftSidebar();
+      renderRightSidebar();
+    }
+
+    function renderLeftSidebar() {
+      // Barras de las 5 torres en secuencia T5 -> T1 -> T3 -> T2 -> T4
+      const container = document.getElementById('towers-summary-bars');
+      container.innerHTML = TOWERS_ORDER.map(t => {
+        const pct = getTowerProgress(t);
+        const col = getSemaphoreColor(pct);
+        const isCurrent = t === currentTower;
+        return `
+          <div onclick="selectTower('${t}')" style="margin-bottom:8px; cursor:pointer; padding:6px; border-radius:6px; background:${isCurrent ? 'rgba(42, 47, 54,0.55)' : 'transparent'}; border:1px solid ${isCurrent ? '#F5A524' : 'transparent'};">
+            <div style="display:flex; justify-content:space-between; font-size:0.78rem; font-weight:700; margin-bottom:4px;">
+              <span>Torre ${t}</span>
+              <span style="color:${col};">${pct.toFixed(1)}%</span>
+            </div>
+            <div style="width:100%; height:7px; background:#0D0F11; border-radius:4px; overflow:hidden;">
+              <div style="width:${pct}%; height:100%; background:${col};"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Mini Matriz 4 niveles x 5 unidades de la Torre Activa
+      const matrixEl = document.getElementById('tower-mini-matrix');
+      let html = '';
+      [4, 3, 2, 1].forEach(f => {
+        html += `<div class="tower-grid" style="margin-bottom:5px;">`;
+        UNITS.forEach(u => {
+          const p = getUnitProgress(currentTower, f, u);
+          const bg = getSemaphoreColor(p);
+          const activeBorder = (f === currentFloor) ? '2px solid #fff' : '1px solid rgba(0,0,0,0.3)';
+          html += `
+            <div class="mini-cell" style="background:${bg}; border:${activeBorder};"
+                 onclick="jumpToUnit('${currentTower}', ${f}, '${u}')"
+                 title="${currentTower} Piso ${f} ${u}: ${p.toFixed(1)}%">
+              P${f}<br/>${Math.round(p)}%
+            </div>
+          `;
+        });
+        html += `</div>`;
+      });
+      matrixEl.innerHTML = html;
+    }
+
+    function renderRightSidebar() {
+      // Tarjetas de unidades del piso actual
+      const cardsEl = document.getElementById('level-units-cards');
+      cardsEl.innerHTML = UNITS.map(u => {
+        const pct = getUnitProgress(currentTower, currentFloor, u);
+        const pacs = getUnitPACCount(currentTower, currentFloor, u);
+        const col = getSemaphoreColor(pct);
+        return `
+          <div class="partida-mini-row" style="cursor:pointer;" onclick="openUnitModal('${u}')">
+            <div>
+              <strong>${u === 'COMUN' ? 'ÁREA COMÚN' : 'DEPTO ' + u}</strong>
+              ${pacs > 0 ? `<span class="pac-badge" style="margin-left:6px;">${pacs} PAC</span>` : ''}
+            </div>
+            <span style="font-weight:800; color:${col};">${pct.toFixed(1)}%</span>
+          </div>
+        `;
+      }).join('');
+
+      // Listado global de compromisos PAC activos
+      const pacListEl = document.getElementById('pac-active-list');
+      const allScheduled = [];
+      TOWERS_ORDER.forEach(t => {
+        FLOORS.forEach(f => {
+          UNITS.forEach(u => {
+            const list = u === 'COMUN' ? LISTADO_B : LISTADO_A;
+            list.forEach(item => {
+              const st = projectData[t][f][u][item.id];
+              if (st && st.pac) {
+                allScheduled.push({
+                  tower: t, floor: f, unit: u,
+                  partida: item.name,
+                  progress: st.progress,
+                  supervisor: st.supervisor
+                });
+              }
+            });
+          });
+        });
+      });
+
+      document.getElementById('kpi-pac-count').textContent = allScheduled.length;
+      document.getElementById('pac-sidebar-counter').textContent = `${allScheduled.length} Prog.`;
+
+      if (allScheduled.length === 0) {
+        pacListEl.innerHTML = `<p style="font-size:0.76rem; color:var(--text-muted); text-align:center; padding:16px 0;">Sin partidas programadas en PAC semanal.</p>`;
+      } else {
+        pacListEl.innerHTML = allScheduled.map(item => `
+          <div class="partida-mini-row" style="border-left-color: var(--accent-red); flex-direction:column; align-items:flex-start; gap:3px;">
+            <div style="display:flex; justify-content:space-between; width:100%;">
+              <strong>${item.tower} · P${item.floor} · ${item.unit}</strong>
+              <span style="color:${getSemaphoreColor(item.progress)}; font-weight:700;">${item.progress}%</span>
+            </div>
+            <div style="color:#cbd5e1;">${item.partida}</div>
+            <div style="font-size:0.68rem; color:var(--text-muted);">👷 ${item.supervisor}</div>
+          </div>
+        `).join('');
+      }
+    }
+
+    /*************************************************************************
+     * NAVEGACIÓN Y MODO DE PROGRAMACIÓN RÁPIDA (LPS)
+     *************************************************************************/
+    function selectTower(tower) {
+      currentTower = tower;
+      document.querySelectorAll('#tower-selector .pill-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tower === tower);
+      });
+      renderAll();
+    }
+
+    function selectFloor(floor) {
+      currentFloor = Number(floor);
+      document.querySelectorAll('#floor-selector .pill-btn').forEach(btn => {
+        btn.classList.toggle('active', Number(btn.dataset.floor) === currentFloor);
+      });
+      renderAll();
+    }
+
+    function jumpToUnit(tower, floor, unit) {
+      currentTower = tower;
+      currentFloor = Number(floor);
+      selectTower(tower);
+      selectFloor(floor);
+      openUnitModal(unit);
+    }
+
+    document.querySelectorAll('#tower-selector .pill-btn').forEach(btn => {
+      btn.addEventListener('click', () => selectTower(btn.dataset.tower));
+    });
+
+    document.querySelectorAll('#floor-selector .pill-btn').forEach(btn => {
+      btn.addEventListener('click', () => selectFloor(btn.dataset.floor));
+    });
+
+    function toggleFastMode() {
+      fastModeActive = !fastModeActive;
+      const btn = document.getElementById('btn-toggle-fast');
+      const box = document.getElementById('fast-pac-container');
+      const sub = document.getElementById('banner-subtitle');
+
+      if (fastModeActive) {
+        btn.textContent = '⚡ Modo Prog. Rápida: ON';
+        btn.classList.add('on');
+        box.classList.add('active-mode');
+        sub.textContent = 'MODO RÁPIDO ACTIVO: Al pinchar un polígono se programa automáticamente la partida seleccionada.';
+        sub.style.color = '#ff8080';
+      } else {
+        btn.textContent = '⚡ Modo Prog. Rápida: OFF';
+        btn.classList.remove('on');
+        box.classList.remove('active-mode');
+        sub.textContent = 'Haz clic en un polígono para editar partidas o usa el Modo Rápido';
+        sub.style.color = '';
+      }
+    }
+
+    function handlePolygonClick(unit) {
+      if (!fastModeActive) {
+        openUnitModal(unit);
+        return;
+      }
+
+      const selectedPartidaId = document.getElementById('fast-partida-select').value;
+      const selectedSupervisor = document.getElementById('fast-supervisor-select').value;
+      const isDeptoPartida = selectedPartidaId.startsWith('A');
+
+      if (unit === 'COMUN' && isDeptoPartida) {
+        alert('La partida seleccionada pertenece al Listado A (Departamentos). Selecciona una partida del Listado B para programar el Área Común.');
+        return;
+      }
+      if (unit !== 'COMUN' && !isDeptoPartida) {
+        alert('La partida seleccionada pertenece al Listado B (Área Común). Selecciona una partida del Listado A para programar Departamentos.');
+        return;
+      }
+
+      const taskObj = projectData[currentTower][currentFloor][unit][selectedPartidaId];
+      if (taskObj) {
+        taskObj.pac = !taskObj.pac;
+        taskObj.supervisor = selectedSupervisor;
+        saveData();
+        renderAll();
+      }
+    }
+
+    /*************************************************************************
+     * MODAL DE EDICIÓN POR POLÍGONO
+     *************************************************************************/
+    function openUnitModal(unit) {
+      activeModalUnit = unit;
+      document.getElementById('modal-bulk-sup').value = '';
+      renderModalContent();
+      document.getElementById('edit-modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('edit-modal').classList.remove('open');
+      activeModalUnit = null;
+      renderAll();
+    }
+
+    function renderModalContent() {
+      if (!activeModalUnit) return;
+      const unitLabel = activeModalUnit === 'COMUN' ? 'ÁREA COMÚN (26,50 m²)' : `DEPARTAMENTO ${activeModalUnit}`;
+      document.getElementById('modal-unit-title').textContent = `TORRE ${currentTower} · PISO ${currentFloor} · ${unitLabel}`;
+
+      const pct = getUnitProgress(currentTower, currentFloor, activeModalUnit);
+      const badge = document.getElementById('modal-unit-pct');
+      badge.textContent = `${pct.toFixed(1)}%`;
+      badge.style.background = getSemaphoreColor(pct);
+      badge.style.color = '#000';
+
+      const list = activeModalUnit === 'COMUN' ? LISTADO_B : LISTADO_A;
+      const unitTasks = projectData[currentTower][currentFloor][activeModalUnit];
+      const container = document.getElementById('modal-tasks-container');
+
+      container.innerHTML = list.map(item => {
+        const st = unitTasks[item.id];
+        const col = getSemaphoreColor(st.progress);
+        const supOptions = SUPERVISORS.map(s =>
+          `<option value="${s}" ${st.supervisor === s ? 'selected' : ''}>${s}</option>`
+        ).join('');
+
+        return `
+          <div class="task-row ${st.pac ? 'scheduled' : ''}" id="row-${item.id}">
+            <div class="task-info">
+              ${item.name}
+              <span class="task-weight">(${item.weight}%)</span>
+            </div>
+            <div class="slider-wrap">
+              <input type="range" min="0" max="100" step="5" value="${st.progress}"
+                oninput="updateTaskProgress('${item.id}', this.value)" />
+              <span class="slider-val" id="val-${item.id}" style="background:${col};">${st.progress}%</span>
+            </div>
+            <label class="pac-check-label">
+              <input type="checkbox" ${st.pac ? 'checked' : ''}
+                onchange="updateTaskPAC('${item.id}', this.checked)" />
+              Programar PAC
+            </label>
+            <select class="lps-select" onchange="updateTaskSupervisor('${item.id}', this.value)">
+              ${supOptions}
+            </select>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateTaskProgress(taskId, val) {
+      const num = Number(val);
+      projectData[currentTower][currentFloor][activeModalUnit][taskId].progress = num;
+      const valSpan = document.getElementById(`val-${taskId}`);
+      if (valSpan) {
+        valSpan.textContent = `${num}%`;
+        valSpan.style.background = getSemaphoreColor(num);
+      }
+      const pct = getUnitProgress(currentTower, currentFloor, activeModalUnit);
+      const badge = document.getElementById('modal-unit-pct');
+      badge.textContent = `${pct.toFixed(1)}%`;
+      badge.style.background = getSemaphoreColor(pct);
+      saveData();
+    }
+
+    function updateTaskPAC(taskId, checked) {
+      projectData[currentTower][currentFloor][activeModalUnit][taskId].pac = checked;
+      const row = document.getElementById(`row-${taskId}`);
+      if (row) row.classList.toggle('scheduled', checked);
+      saveData();
+    }
+
+    function updateTaskSupervisor(taskId, sup) {
+      projectData[currentTower][currentFloor][activeModalUnit][taskId].supervisor = sup;
+      saveData();
+    }
+
+    function applyBulkSupervisor(sup) {
+      if (!sup || !activeModalUnit) return;
+      const unitTasks = projectData[currentTower][currentFloor][activeModalUnit];
+      Object.keys(unitTasks).forEach(k => {
+        unitTasks[k].supervisor = sup;
+      });
+      saveData();
+      renderModalContent();
+    }
+
+    function setAllUnitProgress(val) {
+      if (!activeModalUnit) return;
+      const unitTasks = projectData[currentTower][currentFloor][activeModalUnit];
+      Object.keys(unitTasks).forEach(k => {
+        unitTasks[k].progress = val;
+      });
+      saveData();
+      renderModalContent();
+    }
+
+    /*************************************************************************
+     * EXPORTACIÓN PAC SEMANAL IMPRIMIBLE (FONDO BLANCO LIMPIO)
+     *************************************************************************/
+    function exportPACSemanal() {
+      const rows = [];
+      TOWERS_ORDER.forEach(t => {
+        FLOORS.forEach(f => {
+          UNITS.forEach(u => {
+            const list = u === 'COMUN' ? LISTADO_B : LISTADO_A;
+            list.forEach(item => {
+              const st = projectData[t][f][u][item.id];
+              if (st && st.pac) {
+                rows.push({
+                  tower: t,
+                  floor: f,
+                  unit: u === 'COMUN' ? 'ÁREA COMÚN' : `DEPTO ${u}`,
+                  partida: item.name,
+                  weight: item.weight,
+                  progress: st.progress,
+                  supervisor: st.supervisor
+                });
+              }
+            });
+          });
+        });
+      });
+
+      const dateStr = new Date().toLocaleDateString('es-CL', {
+        year: 'numeric', month: 'long', day: 'numeric'
+      });
+
+      const tableRowsHtml = rows.length > 0
+        ? rows.map((r, idx) => `
+            <tr>
+              <td>${idx + 1}</td>
+              <td><strong>${r.tower}</strong></td>
+              <td>Piso ${r.floor}</td>
+              <td>${r.unit}</td>
+              <td style="text-align:left;">${r.partida}</td>
+              <td>${r.weight}%</td>
+              <td><strong>${r.progress}%</strong></td>
+              <td>${r.supervisor}</td>
+              <td>☐ Cumple / ☐ No Cumple</td>
+              <td></td>
+            </tr>
+          `).join('')
+        : `<tr><td colspan="10" style="padding:20px; text-align:center;">No hay partidas marcadas con "[x] Programar PAC" actualmente.</td></tr>`;
+
+      const printWin = window.open('', '_blank');
+      printWin.document.write(`
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+          <meta charset="UTF-8" />
+          <title>PAC Semanal — Proyecto Newen Antu</title>
+          <style>
+            body {
+              background: #ffffff;
+              color: #111827;
+              font-family: 'Segoe UI', Arial, sans-serif;
+              margin: 28px;
+            }
+            .header-doc {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              border-bottom: 3px solid #2A2F36;
+              padding-bottom: 12px;
+              margin-bottom: 20px;
+            }
+            .header-doc h1 {
+              color: #2A2F36;
+              margin: 0;
+              font-size: 20px;
+              text-transform: uppercase;
+            }
+            .header-doc p {
+              margin: 4px 0 0;
+              font-size: 13px;
+              color: #4b5563;
+            }
+            .badge-red {
+              background: #F5A524;
+              color: #fff;
+              padding: 6px 12px;
+              font-weight: 700;
+              font-size: 12px;
+              border-radius: 4px;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              font-size: 12px;
+            }
+            th, td {
+              border: 1px solid #cbd5e1;
+              padding: 8px 10px;
+              text-align: center;
+            }
+            th {
+              background-color: #2A2F36;
+              color: #ffffff;
+              text-transform: uppercase;
+              font-size: 11px;
+            }
+            tr:nth-child(even) {
+              background-color: #f8fafc;
+            }
+            .no-print {
+              margin-bottom: 16px;
+              display: flex;
+              gap: 10px;
+            }
+            .btn-print {
+              background: #2A2F36;
+              color: #fff;
+              border: none;
+              padding: 8px 16px;
+              border-radius: 4px;
+              cursor: pointer;
+              font-weight: 700;
+            }
+            @media print {
+              .no-print { display: none; }
+              body { margin: 10px; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="no-print">
+            <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+          </div>
+          <div class="header-doc">
+            <div>
+              <h1>Plan de Asignación Semanal (PAC) — Control de Terminaciones</h1>
+              <p><strong>Proyecto:</strong> Newen Antu (80 Deptos) | <strong>Secuencia LPS:</strong> T5 → T1 → T2 → T4 → T3 | <strong>Fecha:</strong> ${dateStr}</p>
+            </div>
+            <div class="badge-red">ESTÁNDAR LPS v6.0</div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Torre</th>
+                <th>Nivel</th>
+                <th>Unidad</th>
+                <th>Partida Programada</th>
+                <th>Pond.</th>
+                <th>Avance Actual</th>
+                <th>Responsable / Sup.</th>
+                <th>Verificación PAC</th>
+                <th>Causa No Cumplimiento (CNC)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tableRowsHtml}
+            </tbody>
+          </table>
+        </body>
+        </html>
+      `);
+      printWin.document.close();
+    }
+
+    /*************************************************************************
+     * LIMPIAR PLANIFICACIÓN ACTUAL
+     *************************************************************************/
+    function clearCurrentPlanning() {
+      if (!confirm('¿Deseas desmarcar todas las casillas "Programar PAC" de la planificación semanal actual? (Los porcentajes de avance físico se mantendrán intactos).')) {
+        return;
+      }
+      TOWERS_ORDER.forEach(t => {
+        FLOORS.forEach(f => {
+          UNITS.forEach(u => {
+            Object.values(projectData[t][f][u]).forEach(task => {
+              task.pac = false;
+            });
+          });
+        });
+      });
+      saveData();
+      renderAll();
+    }
+
+    // Inicializar al cargar
+    window.addEventListener('DOMContentLoaded', () => {
+      populateFastModeSelect();
+      initData();
+      renderAll();
+    });
+  </script>
+</body>
+</html>

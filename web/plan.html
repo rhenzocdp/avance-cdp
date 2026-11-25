@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planificación semanal · Newen Antu</title>
+<link rel="stylesheet" href="estilo.css">
+<style>
+  .resumen { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+  .kpi { background: var(--panel); border: 1px solid var(--linea); border-radius: var(--radio); padding: 14px 16px; }
+  .kpi span { color: var(--suave); font-size: 11.5px; text-transform: uppercase; letter-spacing: .5px; }
+  .kpi b { display: block; font-size: 22px; margin-top: 4px; }
+  .kpi.destacado { border-color: var(--sol-osc); background: linear-gradient(135deg, #2a2112, var(--panel)); }
+  .kpi.destacado b { color: var(--sol); }
+
+  .pestanas { display: flex; gap: 6px; margin-bottom: 14px; border-bottom: 1px solid var(--linea); }
+  .pestana { background: none; border: none; color: var(--suave); padding: 10px 14px; font-size: 13.5px; font-weight: 600;
+    cursor: pointer; border-bottom: 3px solid transparent; }
+  .pestana.activa { color: var(--texto); border-bottom-color: var(--sol); }
+  .vista { display: none; } .vista.activa { display: block; }
+
+  .aviso { background: #2c2210; border: 1px solid var(--sol-osc); color: var(--sol-claro); padding: 10px 14px;
+    border-radius: 8px; font-size: 13px; margin-bottom: 14px; }
+  .error { background: #2d1515; border-color: #7a2a26; color: #f3b5b1; }
+
+  /* ===== Hoja PAC (se ve igual en pantalla y al imprimir) ===== */
+  .papel { background: #fff; color: #1e293b; border-radius: 6px; padding: 22px 26px; box-shadow: 0 10px 40px rgba(0,0,0,.45);
+    font-size: 11px; overflow-x: auto; }
+  .papel .hdr { display: grid; grid-template-columns: 190px 1fr 220px; border: 1.5px solid #0B2B5C; border-radius: 6px; overflow: hidden; }
+  .papel .hdr > div { padding: 8px 12px; display: flex; flex-direction: column; justify-content: center; }
+  .papel .logo { border-right: 1px solid #cbd5e1; align-items: center; }
+  .papel .logo img { width: 160px; }
+  .papel .ttl { text-align: center; }
+  .papel .ttl h1 { font-size: 17px; color: #0B2B5C; letter-spacing: .4px; text-transform: uppercase; }
+  .papel .ttl h2 { font-size: 12px; color: #C00000; font-weight: 600; margin-top: 2px; }
+  .papel .meta { border-left: 1px solid #cbd5e1; background: #f1f5f9; line-height: 1.7; }
+  .papel .meta b { color: #0B2B5C; }
+  .papel .strip { display: flex; margin: 8px 0 10px; border-radius: 5px; overflow: hidden; font-size: 10.5px; }
+  .papel .strip div { flex: 1; padding: 6px 12px; background: #0B2B5C; color: #e2e8f0; }
+  .papel .strip div + div { border-left: 1px solid #1e4d92; }
+  .papel .strip b { color: #fff; }
+  .papel .strip .acc { background: #C00000; }
+  .papel table { width: 100%; border-collapse: collapse; }
+  .papel th { background: #0B2B5C; color: #fff; font-size: 9.5px; text-transform: uppercase; letter-spacing: .4px; padding: 6px 7px;
+    text-align: left; border: 1px solid #0B2B5C; }
+  .papel td { padding: 4px 7px; border: 1px solid #d6dee8; vertical-align: middle; }
+  .papel td.c, .papel th.c { text-align: center; }
+  .papel td.p { font-weight: 600; color: #0f172a; }
+  .papel tr.grp td { background: #e8eef7; color: #0B2B5C; font-weight: 700; font-size: 10.5px; border-left: 4px solid #C00000; padding: 4px 8px; }
+  .papel tr.grp td span { font-weight: 400; color: #64748b; }
+  .papel .sc { display: inline-block; margin-left: 6px; padding: 0 5px; border-radius: 3px; background: #eef2f7; color: #475569; font-size: 9.5px; font-weight: 600; }
+  .papel .tr { display: inline-block; padding: 0 5px; border-radius: 3px; font-size: 9px; font-weight: 700; }
+  .papel .tr-OG { background: #dbe4f0; color: #0B2B5C; }
+  .papel .tr-TERM { background: #e3f1e6; color: #1f6b3a; }
+  .papel .tr-URB { background: #f3e6d6; color: #8a4b00; }
+  .papel .box { display: inline-block; width: 9px; height: 9px; border: 1px solid #475569; vertical-align: -1px; }
+  .papel .sign { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 38px; text-align: center; font-size: 10.5px; color: #334155; }
+  .papel .sign div { border-top: 1px solid #475569; padding-top: 5px; }
+  .papel .foot { margin-top: 12px; display: flex; justify-content: space-between; font-size: 9px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 4px; }
+  #hojasPac .papel + .papel { margin-top: 26px; }
+  .papel .vacio { text-align: center; padding: 30px; color: #64748b; }
+
+  /* ===== Avance por torre ===== */
+  .torres { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 14px; }
+  .torre { background: var(--panel); border: 1px solid var(--linea); border-radius: var(--radio); padding: 14px; }
+  .torre h3 { font-size: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .torre h3 small { color: var(--suave); font-weight: 500; font-size: 11.5px; }
+  .torre h4 { font-size: 11px; color: var(--suave); text-transform: uppercase; letter-spacing: .5px; margin: 10px 0 6px; }
+  .fund { display: flex; flex-wrap: wrap; gap: 4px; }
+  .fund span { font-size: 10.5px; padding: 3px 7px; border-radius: 5px; background: var(--pend); color: #c9ced4; }
+  .grilla { display: grid; grid-template-columns: 34px repeat(4, 1fr); gap: 4px; font-size: 11px; }
+  .grilla .cab { color: var(--suave); text-align: center; font-size: 10px; }
+  .grilla .niv { color: var(--suave); align-self: center; }
+  .celda { border-radius: 5px; padding: 6px 2px; text-align: center; font-weight: 700; background: var(--pend); color: #c9ced4; cursor: default; }
+  .hecho { background: var(--ok) !important; color: #0c2615 !important; }
+  .programado { background: var(--prog) !important; color: #2a1a02 !important; }
+  .parcial { background: linear-gradient(135deg, var(--ok) 0 50%, var(--pend) 50%) !important; color: #fff !important; }
+  .leyenda { display: flex; gap: 14px; font-size: 12px; color: var(--suave); margin: 4px 0 14px; }
+  .leyenda i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -2px; margin-right: 5px; }
+
+  @media (max-width: 760px) { .resumen { grid-template-columns: repeat(2, 1fr); } }
+
+  @page { size: A4 landscape; margin: 10mm 11mm; }
+  @media print {
+    body { background: #fff; }
+    .barra, .resumen, .pestanas, .aviso, #vistaTorres, .no-print { display: none !important; }
+    .contenedor { padding: 0; max-width: none; }
+    #vistaPac { display: block !important; }
+    .papel { box-shadow: none; padding: 0; border-radius: 0; margin: 0 !important; page-break-after: always; }
+    .papel:last-child { page-break-after: auto; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<header class="barra">
+  <a class="marca" href="index.html"><div class="sol"></div><div><b>Newen Antu · Tablero de Obra</b><small>Planificación semanal</small></div></a>
+  <div class="acciones">
+    <span class="chip" id="origen">Cargando…</span>
+    <select id="filtroSup" title="Filtrar por supervisor"></select>
+    <select id="filtroSub" title="Filtrar por subcontrato"></select>
+    <a class="btn" href="subcontratos.html">👷 Por subcontrato</a>
+    <button class="btn" onclick="iniciar()">↻ Actualizar</button>
+    <button class="btn sol-btn" onclick="window.print()">🖨 Imprimir PAC / PDF</button>
+  </div>
+</header>
+
+<main class="contenedor">
+  <div id="mensajes"></div>
+  <section class="resumen">
+    <div class="kpi"><span>Semana</span><b id="kSemana">—</b></div>
+    <div class="kpi"><span>Fecha de corte</span><b id="kCorte">—</b></div>
+    <div class="kpi destacado"><span>Partidas comprometidas</span><b id="kPartidas">—</b></div>
+    <div class="kpi"><span>Torres con trabajo</span><b id="kTorres">—</b></div>
+  </section>
+
+  <nav class="pestanas">
+    <button class="pestana activa" data-v="vistaPac">PAC de la semana</button>
+    <button class="pestana" data-v="vistaTorres">Avance por torre</button>
+  </nav>
+
+  <section id="vistaPac" class="vista activa"><div id="hojasPac"></div></section>
+
+  <section id="vistaTorres" class="vista">
+    <div class="leyenda">
+      <span><i style="background:var(--ok)"></i>Hecho (real semana anterior)</span>
+      <span><i style="background:var(--prog)"></i>Programado esta semana</span>
+      <span><i style="background:var(--pend)"></i>Pendiente</span>
+    </div>
+    <div class="torres" id="torres"></div>
+  </section>
+</main>
+
+<script src="datos.js"></script>
+<script>
+let D = null;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+document.querySelectorAll('.pestana').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.pestana, .vista').forEach(x => x.classList.remove('activa'));
+  b.classList.add('activa'); $(b.dataset.v).classList.add('activa');
+});
+$('filtroSup').onchange = () => pintarPac();
+$('filtroSub').onchange = () => pintarPac();
+const SUBS_BASE = { 'R&S': ['R&S', 'Enfierradura'], 'H.A.': ['Héctor Arias', 'Moldajes y descimbre'], 'C.L.': ['Camila López', 'Hormigonado y emplantillado'],
+  'CANT.': ['Cantillana', 'Instalación sanitaria'], 'AyO': ['Alfa y Omega', 'Instalación eléctrica'], 'I.F.': ['Ignacio Fuentes', 'Movimiento de tierra (cuadrilla propia)'] };
+const TRAMOS = ['Obra gruesa', 'Terminaciones', 'Urbanización'];
+const tramoDe = g => /TERMINACI/i.test(g || '') ? 'Terminaciones' : /URBANIZ/i.test(g || '') ? 'Urbanización' : 'Obra gruesa';
+const subInfo = sigla => { const c = (D.config.subcontratos || {})[sigla]; if (c) return c; const b = SUBS_BASE[sigla]; return b ? { nombre: b[0], especialidad: b[1] } : { nombre: sigla, especialidad: '' }; };
+
+async function iniciar() {
+  $('origen').textContent = 'Cargando…';
+  try {
+    const { datos, origen } = await NA.cargar();
+    D = datos;
+    $('origen').textContent = origen;
+    $('origen').className = 'chip ' + (origen.startsWith('En línea') ? 'vivo' : 'aviso');
+    $('mensajes').innerHTML = origen.startsWith('En línea') ? '' :
+      `<div class="aviso">Mostrando ${esc(origen.toLowerCase())}. Falta conectar el script en <b>datos.js</b> o no hay conexión.</div>`;
+    const sups = [...new Set(D.plan.map(p => p.supervisor))];
+    $('filtroSup').innerHTML = '<option value="">Todos los supervisores</option>' + sups.map(s => `<option>${esc(s)}</option>`).join('');
+    const siglas = [...new Set(D.plan.map(p => p.resp).filter(Boolean))];
+    const prev = $('filtroSub').value;
+    $('filtroSub').innerHTML = '<option value="">Todos los subcontratos</option><option value="*">Una hoja por subcontrato</option>' +
+      siglas.map(x => `<option value="${esc(x)}">${esc(subInfo(x).nombre)}</option>`).join('');
+    if ([...$('filtroSub').options].some(o => o.value === prev)) $('filtroSub').value = prev;
+    pintarResumen(); pintarPac(); pintarTorres();
+  } catch (e) {
+    $('origen').textContent = 'Sin datos';
+    $('mensajes').innerHTML = `<div class="aviso error">No pude leer la planilla: ${esc(e.message)}</div>`;
+  }
+}
+
+function filasPlan() {
+  const sup = $('filtroSup').value;
+  const extra = (D.sinUnidades || []).map(s => ({ torre: '—', frente: 'Global', unidad: s.grupo, partida: s.partida + (s.prog > 1 ? ` (${s.prog} u.)` : ''),
+    resp: s.resp, supervisor: D.config.supervisor || 'Sin asignar', fecha: '' }));
+  const sub = $('filtroSub').value;
+  extra.forEach((e, i) => e.grupo = (D.sinUnidades[i] || {}).grupo);
+  return D.plan.concat(extra).map((p, i) => Object.assign({}, p, { tramo: tramoDe(p.grupo), _i: i }))
+    .filter(p => (!sup || p.supervisor === sup) && (!sub || sub === '*' || p.resp === sub))
+    .sort((a, b) => TRAMOS.indexOf(a.tramo) - TRAMOS.indexOf(b.tramo) || a._i - b._i);
+}
+
+function pintarResumen() {
+  const f = filasPlan();
+  $('kSemana').textContent = `${D.semana.inicio.slice(0, 5)} → ${D.semana.fin.slice(0, 5)}`;
+  $('kCorte').textContent = D.semana.corte;
+  $('kPartidas').textContent = f.length;
+  $('kTorres').textContent = [...new Set(f.map(p => p.torre).filter(t => t !== '—'))].join(' · ') || '—';
+}
+
+function pintarPac() {
+  const todas = filasPlan();
+  const modo = $('filtroSub').value;
+  let grupos;
+  if (modo === '*') {
+    const siglas = [...new Set(todas.map(p => p.resp).filter(Boolean))];
+    grupos = siglas.map(x => ({ sigla: x, filas: todas.filter(p => p.resp === x) }));
+  } else grupos = [{ sigla: modo, filas: todas }];
+  $('hojasPac').innerHTML = grupos.map(g => hojaPac(g.filas, g.sigla)).join('');
+  pintarResumen();
+}
+
+function hojaPac(filas, sigla) {
+  const sup = $('filtroSup').value || [...new Set(filas.map(p => p.supervisor))].join(' / ') || D.config.supervisor;
+  const sub = sigla ? subInfo(sigla) : null;
+  const nombreTorre = t => t === '—' ? 'Partidas globales' : `Torre ${t.slice(1)} (Edificio ${t.slice(1)})`;
+  let cuerpo = '', actual = null;
+  const sigTramo = { 'Obra gruesa': 'OG', 'Terminaciones': 'TERM', 'Urbanización': 'URB' };
+  filas.forEach((p, i) => {
+    const clave = p.tramo + '|' + p.torre;
+    if (clave !== actual) {
+      actual = clave;
+      const k = filas.filter(x => x.tramo + '|' + x.torre === actual).length;
+      cuerpo += `<tr class="grp"><td colspan="9">${esc(p.tramo)} · ${nombreTorre(p.torre)} <span>· ${k} partida${k > 1 ? 's' : ''}</span></td></tr>`;
+    }
+    cuerpo += `<tr><td class="c">${i + 1}</td><td class="c"><span class="tr tr-${sigTramo[p.tramo]}">${sigTramo[p.tramo]}</span></td><td class="c"><b>${esc(p.torre)}</b></td><td>${esc(p.frente)}</td><td>${esc(p.unidad)}</td>
+      <td class="p">${esc(p.partida)}</td><td>${esc(p.supervisor)}${p.resp ? `<span class="sc">${esc(p.resp)}</span>` : ''}</td>
+      <td class="c">${esc(p.fecha)}</td><td class="c"><span class="box"></span> Sí &nbsp; <span class="box"></span> No</td></tr>`;
+  });
+  let firmas = (D.config.firmas && D.config.firmas.length ? D.config.firmas : ['Jefe Oficina Técnica', 'Jefe de Terreno Obra Gruesa', 'Administrador de Obra']).slice(0, 3);
+  if (sub) firmas = [firmas[1] || 'Jefe de Terreno Obra Gruesa', 'Supervisor ' + (D.config.supervisor || ''), 'Subcontrato (recibe conforme)'];
+  const tramos = TRAMOS.filter(t => filas.some(p => p.tramo === t));
+  const resumenTramos = tramos.map(t => `${t} ${filas.filter(p => p.tramo === t).length}`).join(' · ') || '—';
+  const titulo2 = sub ? `PAC semanal · <span style="color:#0B2B5C">${esc(sub.nombre)}</span>${sub.especialidad ? ' · ' + esc(sub.especialidad) : ''}` : 'Plan de Compromisos (PAC) · ' + esc(tramos.join(' / ') || 'Obra gruesa');
+  return `<div class="papel">
+    <div class="hdr">
+      <div class="logo"><img src="logo_don_pedro.png" alt="Constructora Don Pedro"></div>
+      <div class="ttl"><h1>Programación Semanal de Obra</h1><h2>${titulo2}</h2></div>
+      <div class="meta"><div><b>Obra:</b> ${esc(D.obra)}</div><div><b>Semana:</b> ${D.semana.inicio.slice(0, 5)} al ${D.semana.fin}</div><div><b>Corte:</b> jueves ${D.semana.corte}</div></div>
+    </div>
+    <div class="strip"><div><b>Supervisor:</b> ${esc(sup)}</div>${sub ? `<div><b>Subcontrato:</b> ${esc(sub.nombre)}</div>` : ''}<div><b>Plan de ataque:</b> ${esc(D.config.ataque.join(' → '))}</div>
+      <div><b>Tramos:</b> ${esc(resumenTramos)}</div><div class="acc"><b>Partidas comprometidas: ${filas.length}</b></div></div>
+    <table><thead><tr><th class="c">#</th><th class="c">Tramo</th><th class="c">Torre</th><th>Frente / Nivel</th><th>Unidad de control</th><th>Partida comprometida</th>
+      <th>Supervisor / Subcontrato</th><th class="c">Fecha programa</th><th class="c">Cumple</th></tr></thead>
+      <tbody>${cuerpo || '<tr><td colspan="9" class="vacio">No hay partidas comprometidas esta semana para este filtro.</td></tr>'}</tbody></table>
+    <div class="sign">${firmas.map(f => `<div>${esc(f)}</div>`).join('')}</div>
+    <div class="foot"><span>Constructora Don Pedro · Oficina Técnica · Planificación de Obra</span><span>Fuente: Pizarra de Programación Intermedia Newen Antu · generado ${esc(D.generado)}</span></div>
+  </div>`;
+}
+
+function pintarTorres() {
+  const est = D.estado || {};
+  const porTorre = {};
+  Object.entries(est).forEach(([cod, partidas]) => {
+    const u = NA.unidad(cod); if (!u) return;
+    const t = (porTorre[u.torre] = porTorre[u.torre] || { fund: {}, MURO: {}, LOSA: {} });
+    if (u.tipo === 'FUND') Object.assign(t.fund, partidas);
+    else t[u.tipo][u.nivel + u.ciclo] = partidas;
+  });
+  const clase = partidas => {
+    const v = Object.values(partidas || {});
+    if (!v.length) return '';
+    if (v.includes('programado')) return 'programado';
+    if (v.every(x => x === 'hecho')) return 'hecho';
+    if (v.includes('hecho')) return 'parcial';
+    return '';
+  };
+  const detalle = partidas => Object.entries(partidas || {}).map(([p, s]) => `${p}: ${s}`).join('\n');
+  const torres = D.config.ataque.filter(t => porTorre[t]);
+  $('torres').innerHTML = torres.map(t => {
+    const x = porTorre[t];
+    const hechos = Object.values(x.fund).filter(s => s === 'hecho').length;
+    let grilla = '<div class="cab"></div><div class="cab">Muro C1</div><div class="cab">Muro C2</div><div class="cab">Losa C1</div><div class="cab">Losa C2</div>';
+    ['N4', 'N3', 'N2', 'N1'].forEach(n => {
+      grilla += `<div class="niv">${n}</div>` + [['MURO', 'C1'], ['MURO', 'C2'], ['LOSA', 'C1'], ['LOSA', 'C2']].map(([tp, c]) => {
+        const p = x[tp][n + c]; const v = Object.values(p || {});
+        const h = v.filter(s => s === 'hecho').length;
+        return `<div class="celda ${clase(p)}" title="${esc(detalle(p))}">${v.length ? h + '/' + v.length : '·'}</div>`;
+      }).join('');
+    });
+    return `<div class="torre"><h3>Torre ${t.slice(1)} <small>Fundaciones ${hechos}/${Object.keys(x.fund).length}</small></h3>
+      <h4>Fundaciones</h4><div class="fund">${Object.entries(x.fund).map(([p, s]) => `<span class="${s}">${esc(p)}</span>`).join('')}</div>
+      <h4>Muros y losas por ciclo</h4><div class="grilla">${grilla}</div></div>`;
+  }).join('');
+}
+
+iniciar();
+</script>
+</body>
+</html>
