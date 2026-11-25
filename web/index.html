@@ -41,6 +41,18 @@
 </style>
 </head>
 <body>
+<div id="splash" aria-hidden="true">
+  <div class="sol"></div>
+  <div class="lg"><img src="logo_newen_antu.png" alt="Newen Antu"></div>
+  <h1>Tablero de Obra</h1>
+  <p>Avance y planificación · Constructora Don Pedro · v7</p>
+  <div class="bar"><i></i></div>
+  <div class="cred">Desarrollado por R. Gatica</div>
+</div>
+<script>
+  // Solo la primera vez por sesión del navegador
+  try { if (sessionStorage.getItem('na_splash')) document.getElementById('splash').style.display = 'none'; } catch (e) {}
+</script>
 <header class="barra">
   <a class="marca" href="index.html"><div class="sol"></div><div><b>Newen Antu · Tablero de Obra</b><small>San Pedro de la Paz</small></div></a>
   <div class="acciones"><span class="chip" id="origen">Cargando…</span></div>
@@ -101,7 +113,19 @@
 
 <script src="datos.js"></script>
 <script>
-NA.cargar().then(({ datos: d, origen }) => {
+const T0 = Date.now();
+function salirSplash() {
+  const sp = document.getElementById('splash');
+  if (!sp || sp.style.display === 'none') return;
+  setTimeout(() => {
+    sp.classList.add('fuera'); setTimeout(() => sp.style.display = 'none', 400);
+    try { sessionStorage.setItem('na_splash', '1'); } catch (e) {}
+  }, Math.max(0, 2000 - (Date.now() - T0)));   // mínimo 2 s
+}
+setTimeout(salirSplash, 6000);                   // máximo 6 s aunque la planilla no responda
+const CARGA = NA.cargar();
+CARGA.then(salirSplash, salirSplash);
+CARGA.then(({ datos: d, origen }) => {
   const o = document.getElementById('origen');
   o.textContent = origen; o.className = 'chip ' + (origen.startsWith('En línea') ? 'vivo' : 'aviso');
   const n = d.plan.length + (d.sinUnidades || []).length;
