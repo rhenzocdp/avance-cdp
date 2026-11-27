@@ -9,6 +9,7 @@ Publicado en https://newenantu.netlify.app (Netlify publica la carpeta `web/` en
 - `script/Codigo.gs` Apps Script de la planilla "Pizarra Programación Intermedia - Newen Antu"
   (ID 1H2MPUVoWukJV_WL64qLxy5gft0oH5EsMMHqDOgI4tV8). Lee PIZARRA, PROJECT OG, CONFIG APP y la curva de la planilla de avances.
   `calcularPlan()` es pura y se prueba con node (`module.exports`). Si cambia, el usuario debe pegarlo y publicar "Nueva versión".
+- `foco/ciclo.js` carga directa en Foco en Obra (planificar, avance, CNC, restricciones); se pega en la consola de Foco, no se publica.
 - `herramientas/generar_pdf.py` PDF del PAC o del programa por subcontrato desde un JSON de datos (Playwright).
 
 ## Reglas
